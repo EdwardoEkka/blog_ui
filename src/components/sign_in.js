@@ -1,32 +1,30 @@
 import React, { useState } from "react";
-import axios from "axios"; // Import Axios
-import "./styles/sign_in.css"; // Importing CSS file for styling
+import { Stack, Typography, TextField, Button } from "@mui/material";
 import { setToken } from "./tokenService";
-import { BiSolidHide, BiSolidShow } from "react-icons/bi";
-import { useUser } from './userContext';
-import {useNavigate } from 'react-router-dom';
+import axios from "axios";
+import { useUserContext } from '../userContext';
+import { useNavigate } from 'react-router-dom';
 
-const SignIn = ({Show}) => {
-  const { updateUser } = useUser();
- const navigate = useNavigate();
+const Sign_in = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+  const navigate=useNavigate();
 
-  const [showPassword, setShowPassword] = useState(false); // State to track password visibility
+  const { user, updateUser } = useUserContext();
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    const { id, value } = e.target;
+    setFormData({ ...formData, [id]: value });
   };
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
+    console.log(formData);
+    if (formData.email.trim() === '' || formData.password.trim() === '') {
+      console.log("Please fill in all fields.");
+      return; // Exit early if any field is empty
+    }
 
     try {
       // Make POST request to backend API endpoint
@@ -36,82 +34,71 @@ const SignIn = ({Show}) => {
       );
       const { token } = response.data;
       setToken(token);
-      fetchUserDetails(token);
-      navigate('/users');
+      console.log("Sign In Successfully");
+      console.log("Sign-in successful:", response.data);
+      const data=response.data.user;
+      console.log(data);
+      updateUser(data.email, data.name, data.id);
+      navigate('/');
+      // Optionally, you can redirect the user or show a success message
     } catch (error) {
       console.error("Error signing in:", error);
+      console.log(error.response.data.message);
       // Optionally, you can show an error message to the user
     }
   };
 
-  const fetchUserDetails = async (token) => {
-    try {
-      if (!token) {
-        throw new Error("Token not found");
-      }
-  
-      const response = await axios.get("http://localhost:5000/user-details", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      // updateUser(response.data.user);
-      console.log(response.data);
-      updateUser(response.data.name, response.data.id);
-      // setUserDetails(response.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  
   return (
-    <div className="sign-in-container">
-      <h2 className="sign-in-heading">Sign In</h2>
-      <form className="sign-in-form" onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            className="form-control"
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="password">Password</label>
-
-          <input
-            type={showPassword ? "text" : "password"}
-            id="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            className="form-control"
-          />
-          <div className="password-toggle" onClick={togglePasswordVisibility}>
-            {showPassword ? <BiSolidHide /> : <BiSolidShow />}
-          </div>
-        </div>
-        <button type="submit" className="btn sign-up-btn">
-          Sign in
-        </button>
-      </form>
-      <div className="sign-up-redirect">
-        <p>
-          No account?{" "}
-          <span
-            style={{ color: "green", cursor: "pointer" }}
-            onClick={() => {Show();
-            }}
-          >
-            Sign up
-          </span>
-        </p>
-      </div>
-    </div>
+    <Stack sx={{ alignItems: "center", justifyContent: "center" }}>
+      <Stack
+        sx={{
+          width: { sm: "90%", md: "50%", xs: "70%" },
+          backgroundColor: "yellow",
+          mt: 10,
+          pt: 3,
+          alignItems: "center",
+        }}
+      >
+        <Typography variant="p" sx={{ fontSize: { xs: "30px", sm: "48px"}, mb: "10px"}}>
+          Sign In
+        </Typography>
+        <TextField
+          type="text"
+          defaultValue=""
+          onChange={handleChange}
+          name="email"
+          id="email" 
+          label="Email"
+          sx={{ marginBottom: "10px", width: "90%" }}
+        />
+        <TextField
+          type="password"
+          id="password"
+          defaultValue=""
+          onChange={handleChange}
+          name="password" // Changed id to name for consistency with formData keys
+          label="Password"
+          sx={{ marginBottom: "10px", width: "90%" }}
+        />
+        <Button variant="text" sx={{ backgroundColor: "green", color: "white", mb: "10px" }} onClick={handleSubmit}>
+          Submit
+        </Button>
+        <Stack>
+          <p>
+            No account?{" "}
+            <span
+              style={{ color: "green", cursor: "pointer" }}
+              onClick={() => {
+                // Handle navigation to sign up
+              }}
+            >
+              Sign up
+            </span>
+          </p>
+        </Stack>
+      </Stack>
+    </Stack>
   );
 };
 
-export default SignIn;
+export default Sign_in;
