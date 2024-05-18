@@ -46,6 +46,7 @@ const View = () => {
   const { user, updateUser } = useUserContext();
   const [show, setShow] = useState(false);
   const [isopen, setIsopen] = useState(true);
+  const [showTags, setShowTags] = useState(false);
   const [windowDimensions, setWindowDimensions] = useState({
     width: window.innerWidth,
     height: window.innerHeight,
@@ -221,6 +222,10 @@ const View = () => {
   const handleDelete = () => {
     handleClose();
     handleSubmit();
+  };
+
+  const toggleTags = () => {
+    setShowTags(!showTags);
   };
 
   return (
@@ -502,12 +507,22 @@ const View = () => {
                       <Typography variant="h4" gutterBottom>
                         {title}
                       </Typography>
-                      <Stack gap={2} mt={2} direction="row" sx={{flexWrap:"wrap"}}>
-                      {tags.map((tag, index) => (
-                        <Chip key={index} label={tag} color="secondary" />
-                      ))}
-                      </Stack>
-                      <Typography variant="body1" paragraph>
+                      <Button variant="contained" onClick={toggleTags}>
+                        {showTags ? "Hide Tags" : "Show Tags"}
+                      </Button>
+                      {showTags && (
+                        <Stack
+                          gap={2}
+                          mt={2}
+                          direction="row"
+                          sx={{ flexWrap: "wrap" }}
+                        >
+                          {tags.map((tag, index) => (
+                            <Chip key={index} label={tag} color="primary" />
+                          ))}
+                        </Stack>
+                      )}
+                      <Typography variant="body1" paragraph mt={2}>
                         {body}
                       </Typography>
                     </Paper>

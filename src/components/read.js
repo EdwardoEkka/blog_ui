@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { TextField, Typography, Paper, Container, Button } from "@mui/material";
+import { TextField, Typography, Paper, Container, Button, Grid, IconButton, Collapse, List, ListItem, ListItemText } from "@mui/material";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 import { getToken } from "./tokenService";
@@ -10,8 +12,11 @@ const Read = () => {
   const receivedId = location.state?.blog_id;
   const [content, setContent] = useState("");
   const [title, setTitle] = useState("");
+  const [likes, setLikes] = useState(0);
   const [writer, setWriter] = useState("");
   const [comment, setComment] = useState("");
+  const [comments, setComments] = useState([]);
+  const [commentsOpen, setCommentsOpen] = useState(false);
   const { user, updateUser } = useUserContext();
 
   const fetchUserDetails = async () => {
@@ -37,25 +42,55 @@ const Read = () => {
     fetchUserDetails();
   }, []);
 
-  useEffect(() => {
-    async function fetchBlogData() {
-      try {
-        const response = await axios.get(
-          `http://localhost:5000/getTheBlog/${receivedId}`
-        );
-        if (response.status !== 200) {
-          throw new Error("Failed to fetch blog data");
-        }
-        const data = response.data;
-        setWriter(data.name);
-        setTitle(data.title);
-        setContent(data.body);
-      } catch (error) {
-        console.error(error);
+  async function fetchBlogData() {
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/getTheBlog/${receivedId}`
+      );
+      if (response.status !== 200) {
+        throw new Error("Failed to fetch blog data");
       }
+      const data = response.data;
+      setWriter(data.name);
+      setTitle(data.title);
+      setContent(data.body);
+    } catch (error) {
+      console.error(error);
     }
+  }
 
+  async function fetchLikes() {
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/getLikes/${receivedId}`
+      );
+      if (response.status !== 200) {
+        throw new Error("Failed to fetch likes data");
+      }
+      setLikes(response.data.length);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async function fetchComments() {
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/getComments/${receivedId}`
+      );
+      if (response.status !== 200) {
+        throw new Error("Failed to fetch comments data");
+      }
+      setComments(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  useEffect(() => {
     fetchBlogData();
+    fetchLikes();
+    fetchComments();
   }, [receivedId]);
 
   const PostLike = async (blogId) => {
@@ -66,23 +101,25 @@ const Read = () => {
         likerId: user?.userId,
       });
       console.log("Like submitted successfully:", response.data);
+      fetchLikes();
     } catch (error) {
-      console.error("Error submitting post:", error);
+      console.error("Error submitting like:", error);
     }
   };
 
   const PostComment = async (blogId) => {
     try {
-      console.log(blogId);
       const response = await axios.post("http://localhost:5000/postComment", {
         blogId: blogId,
         comment: comment,
         commenterName: user?.username,
         commenterId: user?.userId,
       });
-      console.log("Post submitted successfully:", response.data);
+      console.log("Comment submitted successfully:", response.data);
+      setComment("");
+      fetchComments();
     } catch (error) {
-      console.error("Error submitting post:", error);
+      console.error("Error submitting comment:", error);
     }
   };
 
@@ -90,9 +127,13 @@ const Read = () => {
     setComment(event.target.value);
   };
 
+  const toggleComments = () => {
+    setCommentsOpen(!commentsOpen);
+  };
+
   return (
     <Container maxWidth="md">
-      <Paper elevation={3} sx={{ padding: 4, marginTop: 4 }}>
+      <Paper elevation={3} sx={{ padding: { xs: 2, sm: 4 }, marginTop: 4 }}>
         <Typography variant="h4" gutterBottom>
           {title}
         </Typography>
@@ -102,24 +143,58 @@ const Read = () => {
         <Typography variant="body1" paragraph>
           {content}
         </Typography>
-        <Button
-          variant="standard"
-          onClick={() => {
-            PostLike(receivedId);
-          }}
-        >
-          Like
-        </Button>
+        <Typography variant="body2" color="textSecondary" gutterBottom>
+          Likes: {likes}
+        </Typography>
+        <Grid container spacing={2} alignItems="center">
+          <Grid item>
+            <Button
+              variant="contained"
+              onClick={() => {
+                PostLike(receivedId);
+              }}
+            >
+              Like
+            </Button>
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              id="comment"
+              multiline
+              fullWidth
+              variant="outlined"
+              value={comment}
+              rows={2}
+              onChange={handleCommentChange}
+            />
+          </Grid>
+          <Grid item>
+            <Button
+              variant="contained"
+              onClick={() => {
+                PostComment(receivedId);
+              }}
+            >
+              Submit
+            </Button>
+          </Grid>
+        </Grid>
+        <Grid container alignItems="center" justifyContent="space-between" sx={{ marginTop: 2 }}>
+          <Typography variant="h6">Comments</Typography>
+          <IconButton onClick={toggleComments}>
+            {commentsOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+          </IconButton>
+        </Grid>
+        <Collapse in={commentsOpen}>
+          <List>
+            {comments.map((comment, index) => (
+              <ListItem key={index}>
+                <ListItemText primary={comment.comment} secondary={`By ${comment.commenterName}`} />
+              </ListItem>
+            ))}
+          </List>
+        </Collapse>
       </Paper>
-      <TextField
-        id="comment"
-        multiline
-        variant="outlined"
-        value={comment}
-        rows={2}
-        onChange={handleCommentChange}
-      />
-      <Button variant="standard" onClick={()=>{PostComment(receivedId)}}>Submit</Button>
     </Container>
   );
 };
