@@ -42,71 +42,98 @@ export default function HideAppBar(props) {
 
   const list = (
     <Box
-      sx={{ width: 250}}
-      role="presentation"
-      onClick={toggleDrawer}
-      onKeyDown={toggleDrawer}
+    sx={{ 
+      width: 250, 
+      bgcolor: 'background.paper',
+
+    }}
+    role="presentation"
+    onClick={toggleDrawer}
+    onKeyDown={toggleDrawer}
+  >
+    <Stack 
+      direction="row" 
+      alignItems="center" 
+      sx={{ 
+        backgroundColor: 'primary.main', 
+        p: 2, 
+        color: 'primary.contrastText' 
+      }}
     >
-      <Stack direction="row" alignItems="center" sx={{backgroundColor:"yellow",p:"5px"}}>
-        <Stack>
-          <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-            {user.userId === "" ? (
-              <Stack
-                onClick={() => navigate("/main_log")}
-                sx={{ cursor: "pointer" }}
-              >
-                Click to Log in
-              </Stack>
-            ) : (
-              "Hello, " + user.username
-            )}
-          </Typography>
-          {user.userId !== "" && <Typography variant="body2">{user.email}</Typography>}
-        </Stack>
+      <Stack>
+        <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+          {user.userId === "" ? (
+            <Stack
+              onClick={() => navigate("/main_log")}
+              sx={{ cursor: "pointer" }}
+            >
+              Click to Log in
+            </Stack>
+          ) : (
+            "Hello, " + user.username
+          )}
+        </Typography>
+        {user.userId !== "" && <Typography variant="body2">{user.email}</Typography>}
       </Stack>
-      <List>
+    </Stack>
+    <List>
+      <ListItem 
+        button 
+        sx={{ 
+          '&:hover': { backgroundColor: 'primary.light' },
+          p: 2 
+        }} 
+        onClick={() => navigate("/")}
+      >
+        <ListItemText primary="Home" />
+      </ListItem>
+      <ListItem 
+        button 
+        sx={{ 
+          '&:hover': { backgroundColor: 'primary.light' },
+          p: 2 
+        }} 
+        onClick={() => navigate("/view")}
+      >
+        <ListItemText primary="Profile" />
+      </ListItem>
+      <ListItem 
+        button 
+        sx={{ 
+          '&:hover': { backgroundColor: 'primary.light' },
+          p: 2 
+        }} 
+        onClick={() => navigate("/write")}
+      >
+        <ListItemText primary="Write" />
+      </ListItem>
+      <ListItem 
+        button 
+        sx={{ 
+          '&:hover': { backgroundColor: 'primary.light' },
+          p: 2 
+        }} 
+        onClick={() => navigate("/main_log")}
+      >
+        <ListItemText primary="About" />
+      </ListItem>
+      {user.userId !== "" && (
         <ListItem
+          button
+          sx={{ 
+            '&:hover': { backgroundColor: 'primary.light' },
+            p: 2 
+          }}
           onClick={() => {
-            navigate("/");
+            removeToken();
+            updateUser("", "", "");
           }}
         >
-          Home
+          <ListItemText primary="Logout" />
         </ListItem>
-        <ListItem
-          onClick={() => {
-            navigate("/view");
-          }}
-        >
-          Profile
-        </ListItem>
-        <ListItem
-          onClick={() => {
-            navigate("/write");
-          }}
-        >
-          Write
-        </ListItem>
-        <ListItem
-          onClick={() => {
-            navigate("/main_log");
-          }}
-        >
-          About
-        </ListItem>
-        {user.userId === "" ? (
-          ""
-        ) : (
-          <ListItem
-            onClick={() => {
-              removeToken();
-              updateUser("", "", "");
-            }}
-          >
-            Logout
-          </ListItem>
-        )}
-      </List>
-    </Box>
+      )}
+    </List>
+  </Box>
   );
   const navigate = useNavigate();
 

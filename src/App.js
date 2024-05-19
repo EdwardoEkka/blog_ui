@@ -9,6 +9,8 @@ import View from "./components/view";
 import { UserProvider } from './userContext';
 import Read from "./components/read";
 import Home from "./components/home";
+import './App.css';
+import PleaseLogin from "./components/l_t_c";
 
 
 
@@ -30,7 +32,6 @@ function App() {
         </Routes>
       </UserProvider>
       </Router>
-      
     </div>
   );
 }

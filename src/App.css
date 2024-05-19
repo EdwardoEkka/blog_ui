@@ -1,0 +1,13 @@
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+.header {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700; /* Bold */
+}
+
+.paragraph {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400; /* Regular */
+}

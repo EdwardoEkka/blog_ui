@@ -10,6 +10,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import axios from "axios";
 import { getToken } from "./tokenService";
 import TagsInput from "./tags";
+import PleaseLogin from "./l_t_c";
 
 const theme = createTheme({
   breakpoints: {
@@ -366,9 +367,7 @@ const Write = () => {
             </Stack>
           </Stack>
         ) : (
-          <Stack sx={{ alignItems: "center", justifyContent: "center" }}>
-            Please Login
-          </Stack>
+          <PleaseLogin word={"write"}/>
         )}
       </Stack>
     </ThemeProvider>

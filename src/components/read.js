@@ -1,7 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { TextField, Typography, Paper, Container, Button, Grid, IconButton, Collapse, List, ListItem, ListItemText } from "@mui/material";
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import {
+  TextField,
+  Typography,
+  Paper,
+  Container,
+  Button,
+  Grid,
+  IconButton,
+  Collapse,
+  List,
+  ListItem,
+  ListItemText,
+  Stack,
+  Box,
+} from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 import { getToken } from "./tokenService";
@@ -16,6 +30,7 @@ const Read = () => {
   const [writer, setWriter] = useState("");
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState([]);
+  const [tags, setTags] = useState([]);
   const [commentsOpen, setCommentsOpen] = useState(false);
   const { user, updateUser } = useUserContext();
 
@@ -54,6 +69,7 @@ const Read = () => {
       setWriter(data.name);
       setTitle(data.title);
       setContent(data.body);
+      setTags(data.tags);
     } catch (error) {
       console.error(error);
     }
@@ -134,9 +150,25 @@ const Read = () => {
   return (
     <Container maxWidth="md">
       <Paper elevation={3} sx={{ padding: { xs: 2, sm: 4 }, marginTop: 4 }}>
-        <Typography variant="h4" gutterBottom>
+        <Typography variant="body1" gutterBottom mt={2}>
           {title}
         </Typography>
+        <Stack gap={1} direction="row" sx={{ flexWrap: "wrap" }}>
+          {tags.slice(0, 3).map((tag, index) => (
+            <Box
+              key={index}
+              sx={{
+                bgcolor: "primary.main",
+                color: "white",
+                p: 0.5,
+                borderRadius: 1,
+                fontSize: "12px",
+              }}
+            >
+              {tag}
+            </Box>
+          ))}
+        </Stack>
         <Typography variant="subtitle1" color="textSecondary" gutterBottom>
           By {writer}
         </Typography>
@@ -175,11 +207,16 @@ const Read = () => {
                 PostComment(receivedId);
               }}
             >
-              Submit
+              Post Comments
             </Button>
           </Grid>
         </Grid>
-        <Grid container alignItems="center" justifyContent="space-between" sx={{ marginTop: 2 }}>
+        <Grid
+          container
+          alignItems="center"
+          justifyContent="space-between"
+          sx={{ marginTop: 2 }}
+        >
           <Typography variant="h6">Comments</Typography>
           <IconButton onClick={toggleComments}>
             {commentsOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
@@ -189,7 +226,10 @@ const Read = () => {
           <List>
             {comments.map((comment, index) => (
               <ListItem key={index}>
-                <ListItemText primary={comment.comment} secondary={`By ${comment.commenterName}`} />
+                <ListItemText
+                  primary={comment.comment}
+                  secondary={`By ${comment.commenterName}`}
+                />
               </ListItem>
             ))}
           </List>

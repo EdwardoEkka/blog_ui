@@ -5,6 +5,7 @@ import Sign_up from "./sign_up";
 import axios from "axios";
 import { getToken } from "./tokenService";
 import { useUserContext } from "../userContext";
+import LoginStatus from "./log";
 
 const Main_log = () => {
   const { user, updateUser } = useUserContext();
@@ -34,7 +35,7 @@ const Main_log = () => {
   return (
     <Stack>
       {user.userId !== "" ? (
-        <Stack sx={{justifyContent:"center",alignItems:"center"}}>You are Already Logged In</Stack>
+        <LoginStatus/>
       ) 
       : 
       (

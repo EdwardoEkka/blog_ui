@@ -21,7 +21,7 @@ const theme = createTheme({
     values: {
       xs: 0,
       sm: 600,
-      tb:768,
+      tb: 768,
       md: 960,
       lg: 1200,
       xl: 1536,
@@ -35,8 +35,18 @@ const Public_blogs = () => {
   const navigate = useNavigate();
   const { user, updateUser } = useUserContext();
   const [latest, setLatest] = useState(null);
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm")); // Check if screen width is less than or equal to 768px
-  const blogsPerPage = isMobile ? 1 : 2;
+  const isXs = useMediaQuery(theme.breakpoints.down('sm')); // xs to sm (1 blog per page)
+  const isSm = useMediaQuery(theme.breakpoints.between('sm', 'md')); // sm to md (2 blogs per page)
+  const isMdUp = useMediaQuery(theme.breakpoints.up('md')); 
+
+  let blogsPerPage;
+  if (isXs) {
+    blogsPerPage = 1;
+  } else if (isSm) {
+    blogsPerPage = 2;
+  } else if (isMdUp) {
+    blogsPerPage = 3;
+  }
 
   const fetchUserDetails = async () => {
     try {
@@ -156,7 +166,7 @@ const Public_blogs = () => {
       >
         <Stack
           sx={{
-            width: { md: "60%", xs: "100%" },
+            width: { md: "50%", xs: "100%" },
             pr: { md: 2 },
             height: { md: "600px", xs: "300px" },
           }}
@@ -179,7 +189,7 @@ const Public_blogs = () => {
                 component="img"
                 image={latest.imageUrl || "/img.png"}
                 alt={latest.title}
-                sx={{ height: { md: "100%", xs: "100%" }, objectFit: "cover" }}
+                sx={{ height: { md:"100%", xs: "100%" }, objectFit: "cover" }}
               />
               <Box
                 sx={{
@@ -193,42 +203,63 @@ const Public_blogs = () => {
                   boxSizing: "border-box",
                 }}
               >
+                <Stack direction="row" gap={2}>
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    sx={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      fontSize: "16px",
+                      fontWeight: "bold",
+                      color: "white",
+                    }}
+                  >
+                    {latest.name}
+                  </Typography>
+                  <Typography variant="body2" color="white">
+                    {formatDate(latest.date)}
+                  </Typography>
+                </Stack>
                 <Typography
                   variant="h6"
+                  sx={{
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    width: "100%",
+                  }}
                   gutterBottom
-
                 >
                   {latest.title}
                 </Typography>
-                <Stack gap={2} mt={1} direction="row" sx={{ flexWrap: "wrap" }}>
+                <Stack gap={1} direction="row" sx={{ flexWrap: "wrap" }}>
                   {latest.tags.slice(0, 3).map((tag, index) => (
-                    <Chip key={index} label={tag} color="primary" />
+                    <Box
+                      key={index}
+                      sx={{
+                        bgcolor: "primary.main",
+                        color: "white",
+                        p: 0.5,
+                        borderRadius: 1,
+                        fontSize: "12px",
+                      }}
+                    >
+                      {tag}
+                    </Box>
                   ))}
                 </Stack>
-                <Typography variant="body2" color="inherit">
-                  {formatDate(latest.date)}
-                </Typography>
-                <Typography
-                  variant="body2"
-                  color="inherit"
-                  sx={{ display: "flex", justifyContent: "flex-end" }}
-                >
-                  by {latest.name}
-                </Typography>
               </Box>
             </Card>
           )}
         </Stack>
-        <Stack sx={{ width: { md: "40%", xs: "100%" } }}>
-          <Typography variant="h6" sx={{textAlign:"center"}}>
-            Public Blogs
-          </Typography>
+        <Stack sx={{ width: { md: "50%", xs: "100%" } }}>
           <Stack
-            flexWrap={{md:"wrap"}}
+            flexWrap={{ md: "wrap" }}
             gap={2}
             justifyContent="center"
             alignItems="flex-start"
-            sx={{ height: { md: "auto", xs: "auto" },flexDirection:"row" }}
+            sx={{ height: { md: "auto", xs: "auto" }, flexDirection: "row" }}
           >
             {displayedBlogs.map((blog, index) => (
               <Card
@@ -245,24 +276,28 @@ const Public_blogs = () => {
                   navigate("/read", { state: { blog_id: blog._id } });
                 }}
               >
-                <Stack sx={{  width: { xs: "100%", md: "40%" },}}>
-
-                <CardMedia
-                  component="img"
-                  image={blog.imageUrl || "/img.png"}
-                  alt={blog.title}
-                  height={200}
-                  sx={{
-                    objectFit: "cover",
-                  }}
-                />
+                <Stack sx={{ width: { xs: "100%", md: "40%" } }}>
+                  <CardMedia
+                    component="img"
+                    image={blog.imageUrl || "/img.png"}
+                    alt={blog.title}
+                    sx={{
+                      height: 150,
+                      objectFit: "cover",
+                    }}
+                  />
                 </Stack>
-                <Box sx={{ p: 2 ,width: { xs: "100%", md: "60%" },}}>
+                <Box sx={{ p: 1.6, width: { xs: "100%", md: "60%" } }}>
                   <Stack direction="row" gap={2}>
                     <Typography
                       variant="body2"
                       color="textSecondary"
-                      sx={{ display: "flex", justifyContent: "flex-end",fontSize:"16px",fontWeight:"bold"}}
+                      sx={{
+                        display: "flex",
+                        justifyContent: "flex-end",
+                        fontSize: "16px",
+                        fontWeight: "bold",
+                      }}
                     >
                       {blog.name}
                     </Typography>
@@ -273,56 +308,64 @@ const Public_blogs = () => {
                   <Typography
                     variant="h6"
                     sx={{
-                      whiteSpace: "nowrap",
+                      display: "-webkit-box",
+                      WebkitBoxOrient: "vertical",
+                      WebkitLineClamp: 2,
                       overflow: "hidden",
                       textOverflow: "ellipsis",
-                      width:"100%"
+                      width: "100%",
                     }}
                     gutterBottom
                   >
                     {blog.title}
                   </Typography>
-                  <Stack
-                    gap={1}
-                    direction="row"
-                    sx={{ flexWrap: "wrap" }}
-                  >
+
+                  <Stack gap={1} direction="row" sx={{ flexWrap: "wrap" }}>
                     {blog.tags.slice(0, 3).map((tag, index) => (
-                      <Box key={index} sx={{ bgcolor: 'primary.main', color: 'white', p: 0.5, borderRadius: 1,fontSize:"12px"}}>
-                      {tag}
-                    </Box>
-                    
+                      <Box
+                        key={index}
+                        sx={{
+                          bgcolor: "primary.main",
+                          color: "white",
+                          p: 0.5,
+                          borderRadius: 1,
+                          fontSize: "12px",
+                        }}
+                      >
+                        {tag}
+                      </Box>
                     ))}
                   </Stack>
                 </Box>
               </Card>
             ))}
           </Stack>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                width: "100%",
-                mt: 2,
-              }}
+
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              width: "100%",
+              mt: 2,
+            }}
+          >
+            <Button
+              variant="contained"
+              onClick={handlePreviousPage}
+              disabled={currentPage === 0}
             >
-              <Button
-                variant="contained"
-                onClick={handlePreviousPage}
-                disabled={currentPage === 0}
-              >
-                Previous
-              </Button>
-              <Button
-                variant="contained"
-                onClick={handleNextPage}
-                disabled={
-                  currentPage >= Math.ceil(blogs.length / blogsPerPage) - 1
-                }
-              >
-                Next
-              </Button>
-            </Box>
+              Previous
+            </Button>
+            <Button
+              variant="contained"
+              onClick={handleNextPage}
+              disabled={
+                currentPage >= Math.ceil(blogs.length / blogsPerPage) - 1
+              }
+            >
+              Next
+            </Button>
+          </Box>
         </Stack>
       </Container>
     </ThemeProvider>

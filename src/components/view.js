@@ -12,12 +12,13 @@ import {
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useNavigate } from "react-router-dom";
-import { FaEllipsisV } from "react-icons/fa";
+import { FaEllipsisH } from "react-icons/fa";
 import { SlArrowDown } from "react-icons/sl";
 import axios from "axios";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useUserContext } from "../userContext";
 import { getToken } from "./tokenService";
+import PleaseLogin from "./l_t_c";
 
 const theme = createTheme({
   breakpoints: {
@@ -465,19 +466,16 @@ const View = () => {
                 </Stack>
               </Stack>
               {id ? (
-                <Stack sx={{ paddingLeft: "20px", paddingRight: "20px" }}>
+                <Stack sx={{ paddingLeft: {xs:"2px",sm:"20px"}, paddingRight: {xs:"2px",sm:"20px"} }}>
                   <Container>
                     <Paper
                       elevation={3}
-                      sx={{ padding: 4, marginTop: 4, position: "relative" }}
+                      sx={{ padding: {xs:2,sm:4}, marginTop: 4, position: "relative" }}
                     >
-                      <Stack
-                        onClick={handleMenuClick}
-                        position="absolute"
-                        sx={{ right: "0", padding: "5px" }}
-                      >
-                        <FaEllipsisV />
-                      </Stack>
+                      <Button variant="contained" onClick={handleMenuClick} sx={{marginRight:"5px",marginTop:"3px"}}>Edit Options</Button>
+                      <Button variant="contained" onClick={toggleTags} sx={{marginTop:"3px"}}>
+                        {showTags ? "Hide Tags" : "Show Tags"}
+                      </Button>
                       <Menu
                         anchorEl={anchorEl}
                         open={Boolean(anchorEl)}
@@ -486,30 +484,18 @@ const View = () => {
                         <MenuItem>
                           {" "}
                           {pub ? (
-                            <img
-                              style={{ width: "40px", height: "40px" }}
-                              src="./icons/public.png"
-                              alt="public"
+                            <Typography variant="body2"
                               onClick={handleSetPublic}
-                            />
+                            >Make Public</Typography>
                           ) : (
-                            <img
-                              style={{ width: "40px", height: "40px" }}
-                              src="./icons/private.png"
-                              alt="private"
+                            <Typography variant="body2"
                               onClick={handleSetPublic}
-                            />
+                            >Make Private</Typography>
                           )}
                         </MenuItem>
                         <MenuItem onClick={handleUpdate}>Update</MenuItem>
                         <MenuItem onClick={handleDelete}>Delete</MenuItem>
                       </Menu>
-                      <Typography variant="h4" gutterBottom>
-                        {title}
-                      </Typography>
-                      <Button variant="contained" onClick={toggleTags}>
-                        {showTags ? "Hide Tags" : "Show Tags"}
-                      </Button>
                       {showTags && (
                         <Stack
                           gap={2}
@@ -522,6 +508,9 @@ const View = () => {
                           ))}
                         </Stack>
                       )}
+                      <Typography variant="body1" gutterBottom mt={2}>
+                        {title}
+                      </Typography>
                       <Typography variant="body1" paragraph mt={2}>
                         {body}
                       </Typography>
@@ -534,7 +523,7 @@ const View = () => {
             </Stack>
           </Stack>
         ) : (
-          <Container maxWidth={false}></Container>
+          <PleaseLogin word={"read"} />
         )}
       </div>
     </ThemeProvider>
