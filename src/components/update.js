@@ -1,4 +1,12 @@
-import { Stack, Typography, TextField, Button,Container } from "@mui/material";
+import {
+  Stack,
+  Typography,
+  TextField,
+  Button,
+  Container,
+  MenuItem,
+  Menu,
+} from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { SlArrowDown } from "react-icons/sl";
 import { SlArrowUp } from "react-icons/sl";
@@ -43,8 +51,6 @@ const Update = (props) => {
   const [fontSize, setFontSize] = useState(16);
   const [fontColor, setFontColor] = useState("#000000");
   const [fntFamily, setFntFamily] = useState("Arial");
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
   const availableTags = [
     "React",
     "JavaScript",
@@ -55,6 +61,18 @@ const Update = (props) => {
     "Express",
     "MongoDB",
   ];
+  const [isMenuOpen, setisMenuOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleMenuClick = (event) => {
+    setAnchorEl(event.currentTarget);
+    setisMenuOpen(true);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    setisMenuOpen(false);
+  };
 
   const fetchUserDetails = async () => {
     try {
@@ -216,7 +234,7 @@ const Update = (props) => {
         {
           title: title,
           body: content,
-          tags: tags
+          tags: tags,
         }
       );
       if (response.status === 200) {
@@ -247,10 +265,8 @@ const Update = (props) => {
                       alignItems: "center",
                     }}
                   >
-                    <Typography variant="p">Good {timeOfDay}</Typography>
-                    <Typography variant="p">
-                      {time.toLocaleTimeString()}
-                    </Typography>
+                     <Typography variant="body2" sx={{ marginTop:"20px",fontSize:"24px",fontWeight:"700"}}>Good {timeOfDay}</Typography>
+                <Typography variant="body2" sx={{ marginTop:"20px",fontSize:"20px",fontWeight:"400"}}>{time.toLocaleTimeString()}</Typography>
                     {picture && (
                       <img
                         src={picture}
@@ -262,10 +278,10 @@ const Update = (props) => {
                         }}
                       />
                     )}
-                    <Stack sx={{ padding: "10px" }}>
-                      <Typography variant="p">{quote}</Typography>
-                      <Typography variant="p">- {author}</Typography>
-                    </Stack>
+                    <Stack sx={{ padding: "10px",justifyContent:"center"}} direction="column">
+                  <Typography variant="body2" sx={{fontSize:"16px"}}>{quote}</Typography>
+                  <Typography variant="body2" sx={{fontSize:"16px",fontWeight:"700"}}>- {author}</Typography>
+                </Stack>
                   </Stack>
                 </Slide>
               ) : null
@@ -283,8 +299,8 @@ const Update = (props) => {
                   zIndex: 1,
                 }}
               >
-                <Typography variant="p">Good {timeOfDay}</Typography>
-                <Typography variant="p">{time.toLocaleTimeString()}</Typography>
+                 <Typography variant="body2" sx={{ marginTop:"20px",fontSize:"24px",fontWeight:"700"}}>Good {timeOfDay}</Typography>
+                <Typography variant="body2" sx={{ marginTop:"20px",fontSize:"20px",fontWeight:"400"}}>{time.toLocaleTimeString()}</Typography>
                 {picture && (
                   <img
                     src={picture}
@@ -296,9 +312,9 @@ const Update = (props) => {
                     }}
                   />
                 )}
-                <Stack sx={{ padding: "10px" }}>
-                  <Typography variant="p">{quote}</Typography>
-                  <Typography variant="p">- {author}</Typography>
+                 <Stack sx={{ padding: "10px",justifyContent:"center"}} direction="column">
+                  <Typography variant="body2" sx={{fontSize:"16px"}}>{quote}</Typography>
+                  <Typography variant="body2" sx={{fontSize:"16px",fontWeight:"700"}}>- {author}</Typography>
                 </Stack>
               </Stack>
             )}
@@ -320,15 +336,38 @@ const Update = (props) => {
               >
                 {isopen ? <SlArrowUp /> : <SlArrowDown />}
               </Stack>
-              <Stack direction="column" alignItems="center" spacing={2}>
-                <Typography variant="p">Update your blog here</Typography>
+              <Stack direction="column" alignItems="center" spacing={2} sx={{ marginTop: { xs: "10px", sm: "20px" } }}>
+              <Typography
+                  variant="body2"
+                  sx={{
+                    textAlign: "left",
+                    fontWeight: "700",
+                    fontSize: "24px",
+                  }}
+                >
+                  Update your blog here
+                </Typography>
                 <Button
                   variant="contained"
-                  onClick={() => setIsMenuOpen(!isMenuOpen)}
+                  onClick={handleMenuClick}
                   sx={{ marginBottom: 10 }}
                 >
                   {isMenuOpen ? "Close Menu" : "Open Tools"}
                 </Button>
+
+                <Menu
+                  anchorEl={anchorEl}
+                  open={isMenuOpen}
+                  onClose={handleMenuClose}
+                >
+                  <MenuItem>
+                    <Edit
+                      fFmaily={handleFontFamilyChange}
+                      fSize={handleFontSizeChange}
+                      fColor={handleFontColorChange}
+                    />
+                  </MenuItem>
+                </Menu>
 
                 {isMenuOpen && (
                   <Edit

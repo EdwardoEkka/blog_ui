@@ -7,12 +7,11 @@ import {
   Container,
   Menu,
   MenuItem,
-  Chip,
+  Box,
 } from "@mui/material";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useNavigate } from "react-router-dom";
-import { FaEllipsisH } from "react-icons/fa";
 import { SlArrowDown } from "react-icons/sl";
 import axios from "axios";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
@@ -250,7 +249,12 @@ const View = () => {
               }}
             >
               <Stack>
-                <Typography variant="h6">Hello {user.username}</Typography>
+                <Typography
+                  variant="body2"
+                  sx={{ fontSize: "24px", fontWeight: "700",marginTop:{xs:"10px",sm:"20px"}}}
+                >
+                  Hello {user.username}
+                </Typography>
               </Stack>
               {blogs.length !== 0 ? (
                 <Stack
@@ -264,13 +268,18 @@ const View = () => {
                     sx={{
                       display: "flex",
                       flexDirection: "row",
+                      marginTop:{xs:"10px",sm:"20px"}
                     }}
                   >
                     <Typography
                       style={{
-                        padding: "5px",
+                        padding: "10px",
                         cursor: "pointer",
-                        textDecoration: show ? "none" : "underline",
+                        backgroundColor: show ? "transparent" : "#e0e0e0", // Change to a selected color you prefer
+                        border: show
+                          ? "1px solid transparent"
+                          : "1px solid #000", // Change to the border you prefer
+                        borderRadius: "5px",
                       }}
                       onClick={() => {
                         setShow(false);
@@ -280,9 +289,13 @@ const View = () => {
                     </Typography>
                     <Typography
                       style={{
-                        padding: "5px",
+                        padding: "10px",
                         cursor: "pointer",
-                        textDecoration: show ? "underline" : "none",
+                        backgroundColor: show ? "#e0e0e0" : "transparent", // Change to a selected color you prefer
+                        border: show
+                          ? "1px solid #000"
+                          : "1px solid transparent", // Change to the border you prefer
+                        borderRadius: "5px",
                       }}
                       onClick={() => {
                         setShow(true);
@@ -292,13 +305,13 @@ const View = () => {
                     </Typography>
                   </Stack>
                   {show ? (
-                    <Stack sx={{ p: "10px", width: "95%" }}>
+                    <Stack sx={{ p: "10px", width: "95%", marginTop:{sm:"20px",xs:"10px"}}}>
                       <DatePicker
                         selected={selectedDate}
                         onChange={(date) => setSelectedDate(date)}
                         dateFormat="dd-MM-yyyy"
                       />
-                      <Typography variant="h6">
+                      <Typography variant="body2" sx={{marginTop:{xs:"10px",sm:"20px"},fontSize:"16px",fontWeight:"400"}}>
                         Blog for{" "}
                         {selectedDate
                           ? selectedDate.toLocaleDateString("en-GB")
@@ -312,9 +325,13 @@ const View = () => {
                               border: "1px solid black",
                               width: "100%",
                               cursor: "pointer",
-                              marginTop: "5px",
+                              marginTop: "10px",
                               borderRadius: "10px",
                               flexGrow: 1,
+                              '&:hover': {
+                                backgroundColor: 'grey',
+                              },
+                              
                             }}
                             onClick={() => {
                               setId(blog._id);
@@ -346,14 +363,13 @@ const View = () => {
                           </Stack>
                         ))
                       ) : (
-                        <div>
-                          <p>No Blogs Found for the Selected Date</p>
-                        </div>
+                        <Stack>
+                          <Typography variant="body2" sx={{fontSize:"16px",fontWeight:"700",marginTop:"10px"}}>No Blogs Found for the Selected Date</Typography>
+                        </Stack>
                       )}
                     </Stack>
                   ) : (
-                    <Stack sx={{ p: "10px", width: "95%" }}>
-                      <Typography variant="h6">All Blogs</Typography>
+                    <Stack sx={{ p: "10px", width: "95%",marginTop:{xs:"10px",sm:"20px"}}}>
                       {paginatedData.map((item, index) => (
                         <Stack
                           key={index}
@@ -361,8 +377,11 @@ const View = () => {
                             border: "1px solid black",
                             width: "100%",
                             cursor: "pointer",
-                            marginTop: "5px",
+                            marginTop: "10px",
                             borderRadius: "10px",
+                            '&:hover': {
+                              backgroundColor: 'grey',
+                            }
                           }}
                           onClick={() => {
                             setId(item._id);
@@ -466,14 +485,33 @@ const View = () => {
                 </Stack>
               </Stack>
               {id ? (
-                <Stack sx={{ paddingLeft: {xs:"2px",sm:"20px"}, paddingRight: {xs:"2px",sm:"20px"} }}>
+                <Stack
+                  sx={{
+                    paddingLeft: { xs: "2px", sm: "20px" },
+                    paddingRight: { xs: "2px", sm: "20px" },
+                  }}
+                >
                   <Container>
                     <Paper
                       elevation={3}
-                      sx={{ padding: {xs:2,sm:4}, marginTop: 4, position: "relative" }}
+                      sx={{
+                        padding: { xs: 2, sm: 4 },
+                        marginTop: 4,
+                        position: "relative",
+                      }}
                     >
-                      <Button variant="contained" onClick={handleMenuClick} sx={{marginRight:"5px",marginTop:"3px"}}>Edit Options</Button>
-                      <Button variant="contained" onClick={toggleTags} sx={{marginTop:"3px"}}>
+                      <Button
+                        variant="contained"
+                        onClick={handleMenuClick}
+                        sx={{ marginRight: "5px", marginTop: "3px" }}
+                      >
+                        Edit Options
+                      </Button>
+                      <Button
+                        variant="contained"
+                        onClick={toggleTags}
+                        sx={{ marginTop: "3px" }}
+                      >
                         {showTags ? "Hide Tags" : "Show Tags"}
                       </Button>
                       <Menu
@@ -484,13 +522,19 @@ const View = () => {
                         <MenuItem>
                           {" "}
                           {pub ? (
-                            <Typography variant="body2"
+                            <Typography
+                              variant="body2"
                               onClick={handleSetPublic}
-                            >Make Public</Typography>
+                            >
+                              Make Public
+                            </Typography>
                           ) : (
-                            <Typography variant="body2"
+                            <Typography
+                              variant="body2"
                               onClick={handleSetPublic}
-                            >Make Private</Typography>
+                            >
+                              Make Private
+                            </Typography>
                           )}
                         </MenuItem>
                         <MenuItem onClick={handleUpdate}>Update</MenuItem>
@@ -504,14 +548,38 @@ const View = () => {
                           sx={{ flexWrap: "wrap" }}
                         >
                           {tags.map((tag, index) => (
-                            <Chip key={index} label={tag} color="primary" />
+                            <Box
+                              key={index}
+                              sx={{
+                                bgcolor: "#DCDCDC",
+                                color: "black",
+                                p: 0.5,
+                                borderRadius: 1,
+                                fontSize: "12px",
+                              }}
+                            >
+                              {tag}
+                            </Box>
                           ))}
                         </Stack>
                       )}
-                      <Typography variant="body1" gutterBottom mt={2}>
+                      <Typography
+                        variant="body1"
+                        gutterBottom
+                        mt={2}
+                        sx={{
+                          fontWeight: "700",
+                          fontSize: { xs: "16px", sm: "24px" },
+                        }}
+                      >
                         {title}
                       </Typography>
-                      <Typography variant="body1" paragraph mt={2}>
+                      <Typography
+                        variant="body1"
+                        paragraph
+                        mt={2}
+                        sx={{ fontSize: { xs: "16px", sm: "20px" } }}
+                      >
                         {body}
                       </Typography>
                     </Paper>

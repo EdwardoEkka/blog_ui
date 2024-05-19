@@ -1,4 +1,12 @@
-import { Stack, Typography, TextField, Button, Container } from "@mui/material";
+import {
+  Stack,
+  Typography,
+  TextField,
+  Button,
+  Container,
+  Menu,
+  MenuItem,
+} from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { SlArrowDown } from "react-icons/sl";
 import { SlArrowUp } from "react-icons/sl";
@@ -46,7 +54,6 @@ const Write = () => {
   const [fontSize, setFontSize] = useState(16);
   const [fontColor, setFontColor] = useState("#000000");
   const [fntFamily, setFntFamily] = useState("Arial");
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const availableTags = [
     "React",
     "JavaScript",
@@ -57,6 +64,18 @@ const Write = () => {
     "Express",
     "MongoDB",
   ];
+  const [isMenuOpen, setisMenuOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleMenuClick = (event) => {
+    setAnchorEl(event.currentTarget);
+    setisMenuOpen(true);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    setisMenuOpen(false);
+  };
 
   const fetchUserDetails = async () => {
     try {
@@ -89,7 +108,7 @@ const Write = () => {
         title: title,
         body: content,
         date: date,
-        tags: tags
+        tags: tags,
       });
       console.log("Post submitted successfully:", response.data);
     } catch (error) {
@@ -216,10 +235,27 @@ const Write = () => {
                       width: { xs: "100vw", md: "30vw" },
                       backgroundColor: "#FFADA",
                       alignItems: "center",
+                      marginTop: { xs: "10px", sm: "20px" },
                     }}
                   >
-                    <Typography variant="p">Good {timeOfDay}</Typography>
-                    <Typography variant="p">
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        marginTop: "20px",
+                        fontSize: "24px",
+                        fontWeight: "700",
+                      }}
+                    >
+                      Good {timeOfDay}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        marginTop: "20px",
+                        fontSize: "20px",
+                        fontWeight: "400",
+                      }}
+                    >
                       {time.toLocaleTimeString()}
                     </Typography>
                     {picture && (
@@ -233,10 +269,10 @@ const Write = () => {
                         }}
                       />
                     )}
-                    <Stack sx={{ padding: "10px" }}>
-                      <Typography variant="p">{quote}</Typography>
-                      <Typography variant="p">- {author}</Typography>
-                    </Stack>
+                     <Stack sx={{ padding: "10px",justifyContent:"center"}} direction="column">
+                  <Typography variant="body2" sx={{fontSize:"16px"}}>{quote}</Typography>
+                  <Typography variant="body2" sx={{fontSize:"16px",fontWeight:"700"}}>- {author}</Typography>
+                </Stack>
                   </Stack>
                 </Slide>
               ) : null
@@ -254,8 +290,26 @@ const Write = () => {
                   zIndex: 1,
                 }}
               >
-                <Typography variant="p">Good {timeOfDay}</Typography>
-                <Typography variant="p">{time.toLocaleTimeString()}</Typography>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    marginTop: "20px",
+                    fontSize: "24px",
+                    fontWeight: "700",
+                  }}
+                >
+                  Good {timeOfDay}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    marginTop: "20px",
+                    fontSize: "20px",
+                    fontWeight: "400",
+                  }}
+                >
+                  {time.toLocaleTimeString()}
+                </Typography>
                 {picture && (
                   <img
                     src={picture}
@@ -267,9 +321,9 @@ const Write = () => {
                     }}
                   />
                 )}
-                <Stack sx={{ padding: "10px" }}>
-                  <Typography variant="p">{quote}</Typography>
-                  <Typography variant="p">- {author}</Typography>
+                <Stack sx={{ padding: "10px",justifyContent:"center"}} direction="column">
+                  <Typography variant="body2" sx={{fontSize:"16px"}}>{quote}</Typography>
+                  <Typography variant="body2" sx={{fontSize:"16px",fontWeight:"700"}}>- {author}</Typography>
                 </Stack>
               </Stack>
             )}
@@ -291,24 +345,44 @@ const Write = () => {
               >
                 {isopen ? <SlArrowUp /> : <SlArrowDown />}
               </Stack>
-              <Stack direction="column" alignItems="center" spacing={2}>
-                <Typography variant="p">Write your blog here</Typography>
+              <Stack
+                direction="column"
+                alignItems="center"
+                spacing={2}
+                sx={{ marginTop: { xs: "10px", sm: "20px" } }}
+              >
+                <Typography
+                  variant="body2"
+                  sx={{
+                    textAlign: "left",
+                    fontWeight: "700",
+                    fontSize: "24px",
+                  }}
+                >
+                  Write your blog here
+                </Typography>
                 <Button
                   variant="contained"
-                  onClick={() => {setIsMenuOpen(!isMenuOpen)}}
-                  sx={{ marginBottom: 10 }}
+                  onClick={handleMenuClick}
+                  sx={{ marginBottom: "20px" }}
                 >
-                  {isMenuOpen ? "Close Menu" : "Open Tools"}
+                  {isMenuOpen ? "Tools" : "Tools"}
                 </Button>
 
-                {isMenuOpen && (
-                  <Edit
-                    fFmaily={handleFontFamilyChange}
-                    fSize={handleFontSizeChange}
-                    fColor={handleFontColorChange}
-                  />
-                )}
-                <Container >
+                <Menu
+                  anchorEl={anchorEl}
+                  open={isMenuOpen}
+                  onClose={handleMenuClose}
+                >
+                  <MenuItem>
+                    <Edit
+                      fFmaily={handleFontFamilyChange}
+                      fSize={handleFontSizeChange}
+                      fColor={handleFontColorChange}
+                    />
+                  </MenuItem>
+                </Menu>
+                <Container>
                   <TagsInput
                     tags={tags}
                     setTags={setTags}
@@ -367,7 +441,7 @@ const Write = () => {
             </Stack>
           </Stack>
         ) : (
-          <PleaseLogin word={"write"}/>
+          <PleaseLogin word={"write"} />
         )}
       </Stack>
     </ThemeProvider>

@@ -23,7 +23,7 @@ function Edit({ fFmaily, fSize, fColor, fAlignment }) {
   };
 
   return (
-    <Box display="flex" gap="20px" padding="20px">
+    <Box display="flex" gap="20px" padding="20px" flexDirection="column">
       <TextField
         label="Font Size"
         type="number"

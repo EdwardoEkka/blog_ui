@@ -150,16 +150,13 @@ const Read = () => {
   return (
     <Container maxWidth="md">
       <Paper elevation={3} sx={{ padding: { xs: 2, sm: 4 }, marginTop: 4 }}>
-        <Typography variant="body1" gutterBottom mt={2}>
-          {title}
-        </Typography>
         <Stack gap={1} direction="row" sx={{ flexWrap: "wrap" }}>
           {tags.slice(0, 3).map((tag, index) => (
             <Box
               key={index}
               sx={{
-                bgcolor: "primary.main",
-                color: "white",
+                bgcolor: "#DCDCDC",
+                color: "black",
                 p: 0.5,
                 borderRadius: 1,
                 fontSize: "12px",
@@ -169,10 +166,13 @@ const Read = () => {
             </Box>
           ))}
         </Stack>
+        <Typography variant="body1" gutterBottom mt={2} sx={{fontWeight:"700",fontSize:{xs:"16px",sm:"24px"}}}>
+          {title}
+        </Typography>
         <Typography variant="subtitle1" color="textSecondary" gutterBottom>
           By {writer}
         </Typography>
-        <Typography variant="body1" paragraph>
+        <Typography variant="body2" paragraph sx={{fontSize:"16px"}}>
           {content}
         </Typography>
         <Typography variant="body2" color="textSecondary" gutterBottom>

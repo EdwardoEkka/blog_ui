@@ -35,9 +35,9 @@ const Public_blogs = () => {
   const navigate = useNavigate();
   const { user, updateUser } = useUserContext();
   const [latest, setLatest] = useState(null);
-  const isXs = useMediaQuery(theme.breakpoints.down('sm')); // xs to sm (1 blog per page)
-  const isSm = useMediaQuery(theme.breakpoints.between('sm', 'md')); // sm to md (2 blogs per page)
-  const isMdUp = useMediaQuery(theme.breakpoints.up('md')); 
+  const isXs = useMediaQuery(theme.breakpoints.down("sm")); // xs to sm (1 blog per page)
+  const isSm = useMediaQuery(theme.breakpoints.between("sm", "md")); // sm to md (2 blogs per page)
+  const isMdUp = useMediaQuery(theme.breakpoints.up("md"));
 
   let blogsPerPage;
   if (isXs) {
@@ -161,6 +161,7 @@ const Public_blogs = () => {
           flexDirection: { xs: "column", md: "row" },
           width: "100%",
           marginTop: 4,
+          marginBottom:4
         }}
         maxWidth={false}
       >
@@ -189,7 +190,7 @@ const Public_blogs = () => {
                 component="img"
                 image={latest.imageUrl || "/img.png"}
                 alt={latest.title}
-                sx={{ height: { md:"100%", xs: "100%" }, objectFit: "cover" }}
+                sx={{ height: { md: "100%", xs: "100%" }, objectFit: "cover" }}
               />
               <Box
                 sx={{
@@ -238,7 +239,7 @@ const Public_blogs = () => {
                     <Box
                       key={index}
                       sx={{
-                        bgcolor: "primary.main",
+                        bgcolor: "#787878",
                         color: "white",
                         p: 0.5,
                         borderRadius: 1,
@@ -325,8 +326,8 @@ const Public_blogs = () => {
                       <Box
                         key={index}
                         sx={{
-                          bgcolor: "primary.main",
-                          color: "white",
+                          bgcolor: "#E8E8E8",
+                          color: "black",
                           p: 0.5,
                           borderRadius: 1,
                           fontSize: "12px",
