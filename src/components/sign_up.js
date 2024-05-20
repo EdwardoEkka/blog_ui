@@ -1,13 +1,11 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Stack, Typography, TextField, Button } from "@mui/material";
+import { Stack, Typography, TextField, Button, Alert } from "@mui/material";
+import toast, { Toaster } from "react-hot-toast";
 
-const Sign_up = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: ""
-  });
+const Sign_up = ({show}) => {
+  const [formData, setFormData] = useState({ name: "", email: "", password: "" });
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -15,69 +13,95 @@ const Sign_up = () => {
   };
 
   const handleSubmit = async () => {
+    if (formData.name.trim() === '' || formData.email.trim() === '' || formData.password.trim() === '') {
+      setErrorMessage("Please fill in all fields.");
+      return;
+    }
+
     try {
       const response = await axios.post("http://localhost:5000/manual-sign_up", formData);
       console.log(response.data); 
+      toast.success("Sign-up Successfull");
     } catch (error) {
-      console.error(error);
+      setErrorMessage(error.response?.data?.message || "An error occurred during sign up.");
+      toast.error(error.response?.data?.message || "An error occurred during sign up.");
     }
   };
 
   return (
-    <Stack sx={{ alignItems: "center", justifyContent: "center" }}>
+    <Stack
+      sx={{
+        alignItems: "center",
+        justifyContent: "center",
+        minHeight: "100vh",
+        backgroundColor: "#f0f2f5",
+        padding: 3,
+      }}
+    >
       <Stack
+        spacing={2}
         sx={{
-          width: { sm: "90%", md: "50%", xs: "70%" },
-          backgroundColor: "yellow",
-          mt: 10,
-          pt: 3,
-          alignItems: "center"
+          width: { xs: "90%", sm: "70%", md: "50%", lg: "30%" },
+          backgroundColor: "#ffffff",
+          boxShadow: 3,
+          borderRadius: 2,
+          padding: 4,
         }}
       >
-        <Typography variant="p" sx={{ fontSize: { xs: "30px", sm: "48px" }, mb: "10px" }}>
+        <Typography variant="h4" sx={{ mb: 2, textAlign: "center" }}>
           Sign Up
         </Typography>
+        {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
         <TextField
           type="text"
-          defaultValue=""
+          value={formData.name}
+          onChange={handleChange}
           id="name"
           label="Username"
-          sx={{ marginBottom: "10px", width: "90%" }}
-          onChange={handleChange}
+          variant="outlined"
+          fullWidth
+          required
         />
         <TextField
-          type="text"
-          defaultValue=""
+          type="email"
+          value={formData.email}
+          onChange={handleChange}
           id="email"
           label="Email"
-          sx={{ marginBottom: "10px", width: "90%" }}
-          onChange={handleChange}
+          variant="outlined"
+          fullWidth
+          required
         />
         <TextField
           type="password"
-          defaultValue=""
+          value={formData.password}
+          onChange={handleChange}
           id="password"
           label="Password"
-          sx={{ marginBottom: "10px", width: "90%" }}
-          onChange={handleChange}
+          variant="outlined"
+          fullWidth
+          required
         />
-        <Button variant="text" sx={{ backgroundColor: "green", color: "white", mb: "10px" }} onClick={handleSubmit}>
+        <Button
+          variant="contained"
+          color="primary"
+          sx={{ mt: 2 }}
+          onClick={handleSubmit}
+          fullWidth
+        >
           Submit
         </Button>
-        <Stack>
-          <p>
-            Back to{" "}
-            <span
-              style={{ color: "green", cursor: "pointer" }}
-              onClick={() => {
-                // Handle navigation to sign in
-              }}
-            >
-              Sign in
-            </span>
-          </p>
-        </Stack>
+        <Typography variant="body2" sx={{ textAlign: "center", mt: 2 }}>
+          Back to{" "}
+          <span
+            style={{ color: "#1976d2", cursor: "pointer" }}
+            onClick={() => {show(true)}}
+          >
+            Sign in
+          </span>
+        </Typography>
       </Stack>
+      <Toaster/>
     </Stack>
   );
 };

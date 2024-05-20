@@ -19,6 +19,7 @@ import axios from "axios";
 import { getToken } from "./tokenService";
 import TagsInput from "./tags";
 import PleaseLogin from "./l_t_c";
+import toast, { Toaster } from "react-hot-toast";
 
 const theme = createTheme({
   breakpoints: {
@@ -101,6 +102,11 @@ const Write = () => {
   }, []);
 
   const handleSubmit = async () => {
+    if (!title || !content || tags.length === 0) {
+      toast.error("Please fill in all fields before submitting.");
+      return;
+    }
+
     try {
       const response = await axios.post("http://localhost:5000/write", {
         name: name,
@@ -110,8 +116,10 @@ const Write = () => {
         date: date,
         tags: tags,
       });
+      toast.success("Post submitted successfully!");
       console.log("Post submitted successfully:", response.data);
     } catch (error) {
+      toast.error("Error submitting post.");
       console.error("Error submitting post:", error);
     }
   };
@@ -443,6 +451,7 @@ const Write = () => {
         ) : (
           <PleaseLogin word={"write"} />
         )}
+        <Toaster/>
       </Stack>
     </ThemeProvider>
   );

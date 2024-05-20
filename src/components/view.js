@@ -18,6 +18,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useUserContext } from "../userContext";
 import { getToken } from "./tokenService";
 import PleaseLogin from "./l_t_c";
+import toast, { Toaster } from "react-hot-toast";
 
 const theme = createTheme({
   breakpoints: {
@@ -178,11 +179,13 @@ const View = () => {
         setId("");
         fetchBlogs();
         setShow(false);
+        toast.success("Blog deleted successfully");
       } else {
         throw new Error("Failed to delete blog");
       }
     } catch (error) {
       console.error(error);
+      toast.error(error.message);
     }
   };
 
@@ -196,11 +199,20 @@ const View = () => {
         console.log("Public updated successfully");
         setPub(response.data.public);
         fetchBlogs();
+        if(response.data.public===true)
+          {
+            toast.success("Blog is public now.");
+          }
+        else
+        {
+          toast.success("Blog is private now.");
+        }
       } else {
         throw new Error("Failed to update public");
       }
     } catch (error) {
       console.error(error);
+      toast.error(error.message);
     }
   };
 
@@ -444,14 +456,15 @@ const View = () => {
                   )}
                 </Stack>
               ) : (
-                <Stack
-                  sx={{ cursor: "pointer" }}
+                <Button
+                  sx={{ cursor: "pointer",marginTop:"20px"}}
+                  variant="contained"
                   onClick={() => {
                     navigate("/write");
                   }}
                 >
                   Click here to write blogs
-                </Stack>
+                </Button>
               )}
             </Stack>
 
@@ -526,14 +539,14 @@ const View = () => {
                               variant="body2"
                               onClick={handleSetPublic}
                             >
-                              Make Public
+                              Make Private
                             </Typography>
                           ) : (
                             <Typography
                               variant="body2"
                               onClick={handleSetPublic}
                             >
-                              Make Private
+                              Make Public
                             </Typography>
                           )}
                         </MenuItem>
@@ -593,6 +606,7 @@ const View = () => {
         ) : (
           <PleaseLogin word={"read"} />
         )}
+        <Toaster/>
       </div>
     </ThemeProvider>
   );

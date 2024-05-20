@@ -1,18 +1,15 @@
 import React, { useState } from "react";
-import { Stack, Typography, TextField, Button } from "@mui/material";
+import { Stack, Typography, TextField, Button, Alert } from "@mui/material";
 import { setToken } from "./tokenService";
 import axios from "axios";
 import { useUserContext } from '../userContext';
 import { useNavigate } from 'react-router-dom';
 
-const Sign_in = () => {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
-  const navigate=useNavigate();
-
-  const { user, updateUser } = useUserContext();
+const Sign_in = ({show}) => {
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [errorMessage, setErrorMessage] = useState("");
+  const navigate = useNavigate();
+  const { updateUser } = useUserContext();
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -20,82 +17,85 @@ const Sign_in = () => {
   };
 
   const handleSubmit = async () => {
-    console.log(formData);
     if (formData.email.trim() === '' || formData.password.trim() === '') {
-      console.log("Please fill in all fields.");
-      return; // Exit early if any field is empty
+      setErrorMessage("Please fill in all fields.");
+      return;
     }
-
+    
     try {
-      // Make POST request to backend API endpoint
-      const response = await axios.post(
-        "http://localhost:5000/manual-sign_in",
-        formData
-      );
-      const { token } = response.data;
+      const response = await axios.post("http://localhost:5000/manual-sign_in", formData);
+      const { token, user } = response.data;
+
       setToken(token);
-      console.log("Sign In Successfully");
-      console.log("Sign-in successful:", response.data);
-      const data=response.data.user;
-      console.log(data);
-      updateUser(data.email, data.name, data.id);
+      updateUser(user.email, user.name, user.id);
       navigate('/');
-      // Optionally, you can redirect the user or show a success message
     } catch (error) {
-      console.error("Error signing in:", error);
-      console.log(error.response.data.message);
-      // Optionally, you can show an error message to the user
+      setErrorMessage(error.response?.data?.message || "An error occurred during sign in.");
     }
   };
 
   return (
-    <Stack sx={{ alignItems: "center", justifyContent: "center" }}>
+    <Stack
+      sx={{
+        alignItems: "center",
+        justifyContent: "center",
+        minHeight: "100vh",
+        backgroundColor: "#f0f2f5",
+        padding: 3,
+      }}
+    >
       <Stack
+        spacing={2}
         sx={{
-          width: { sm: "90%", md: "50%", xs: "70%" },
-          backgroundColor: "yellow",
-          mt: 10,
-          pt: 3,
-          alignItems: "center",
+          width:{ xs: "90%", sm: "70%", md: "50%", lg: "30%" },
+          backgroundColor: "#ffffff",
+          boxShadow: 3,
+          borderRadius: 2,
+          padding: 4,
         }}
       >
-        <Typography variant="p" sx={{ fontSize: { xs: "30px", sm: "48px"}, mb: "10px"}}>
+        <Typography variant="h4" sx={{ mb: 2, textAlign: "center" }}>
           Sign In
         </Typography>
+        {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
         <TextField
-          type="text"
-          defaultValue=""
+          type="email"
+          value={formData.email}
           onChange={handleChange}
-          name="email"
-          id="email" 
+          id="email"
           label="Email"
-          sx={{ marginBottom: "10px", width: "90%" }}
+          variant="outlined"
+          fullWidth
+          required
         />
         <TextField
           type="password"
           id="password"
-          defaultValue=""
+          value={formData.password}
           onChange={handleChange}
-          name="password" // Changed id to name for consistency with formData keys
           label="Password"
-          sx={{ marginBottom: "10px", width: "90%" }}
+          variant="outlined"
+          fullWidth
+          required
         />
-        <Button variant="text" sx={{ backgroundColor: "green", color: "white", mb: "10px" }} onClick={handleSubmit}>
+        <Button
+          variant="contained"
+          color="primary"
+          sx={{ mt: 2 }}
+          onClick={handleSubmit}
+          fullWidth
+        >
           Submit
         </Button>
-        <Stack>
-          <p>
-            No account?{" "}
-            <span
-              style={{ color: "green", cursor: "pointer" }}
-              onClick={() => {
-                // Handle navigation to sign up
-              }}
-            >
-              Sign up
-            </span>
-          </p>
-        </Stack>
+        <Typography variant="body2" sx={{ textAlign: "center", mt: 2 }}>
+          No account?{" "}
+          <span
+            style={{ color: "#1976d2", cursor: "pointer" }}
+            onClick={() => {show(false)}}
+          >
+            Sign up
+          </span>
+        </Typography>
       </Stack>
     </Stack>
   );

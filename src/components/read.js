@@ -20,6 +20,7 @@ import axios from "axios";
 import { useLocation } from "react-router-dom";
 import { getToken } from "./tokenService";
 import { useUserContext } from "../userContext";
+import toast, { Toaster } from "react-hot-toast";
 
 const Read = () => {
   const location = useLocation();
@@ -118,12 +119,19 @@ const Read = () => {
       });
       console.log("Like submitted successfully:", response.data);
       fetchLikes();
+      toast.success("Liked");
     } catch (error) {
       console.error("Error submitting like:", error);
+      toast.error(error.response.data.message||error.message);
     }
   };
 
   const PostComment = async (blogId) => {
+    if(comment.length===0)
+      {
+        toast.error("Comment cannot be empty.");
+        return;
+      }
     try {
       const response = await axios.post("http://localhost:5000/postComment", {
         blogId: blogId,
@@ -134,8 +142,10 @@ const Read = () => {
       console.log("Comment submitted successfully:", response.data);
       setComment("");
       fetchComments();
+      toast.success("Comment posted");
     } catch (error) {
       console.error("Error submitting comment:", error);
+      toast.error(error.response.data.message||error.message);
     }
   };
 
@@ -235,6 +245,7 @@ const Read = () => {
           </List>
         </Collapse>
       </Paper>
+      <Toaster/>
     </Container>
   );
 };

@@ -18,6 +18,7 @@ import { getToken } from "./tokenService";
 import { useUserContext } from "../userContext";
 import TagsInput from "./tags";
 import axios from "axios";
+import toast, { Toaster } from "react-hot-toast";
 
 const theme = createTheme({
   breakpoints: {
@@ -228,6 +229,11 @@ const Update = (props) => {
   }, [date]);
 
   const handleSubmit = async () => {
+    if (!title || !content || tags.length === 0) {
+      toast.error("Please fill in all fields before submitting.");
+      return;
+    }
+  
     try {
       const response = await axios.post(
         `http://localhost:5000/updateTheBlog/${recievedId}`,
@@ -238,14 +244,17 @@ const Update = (props) => {
         }
       );
       if (response.status === 200) {
+        toast.success("Blog updated successfully!");
         console.log("Blog updated successfully");
       } else {
         throw new Error("Failed to update blog");
       }
     } catch (error) {
+      toast.error("Error updating blog.");
       console.error(error);
     }
   };
+  
 
   return (
     <ThemeProvider theme={theme}>
@@ -435,6 +444,7 @@ const Update = (props) => {
             </Stack>
           </Stack>
         )}
+        <Toaster/>
       </Stack>
     </ThemeProvider>
   );

@@ -13,7 +13,7 @@ import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import { Stack, useMediaQuery } from "@mui/material";
+import { Button, Stack, useMediaQuery } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useUserContext } from "../userContext";
 import { removeToken } from "./tokenService";
@@ -115,7 +115,7 @@ export default function HideAppBar(props) {
         }} 
         onClick={() => navigate("/main_log")}
       >
-        <ListItemText primary="About" />
+        <ListItemText primary="Account" />
       </ListItem>
       {user.userId !== "" && (
         <ListItem
@@ -129,7 +129,7 @@ export default function HideAppBar(props) {
             updateUser("", "", "");
           }}
         >
-          <ListItemText primary="Logout" />
+          <Button variant="contained">Logout</Button>
         </ListItem>
       )}
     </List>
@@ -208,7 +208,7 @@ export default function HideAppBar(props) {
                         navigate("/main_log");
                       }}
                     >
-                      About
+                      Account
                     </Typography>
                   </Box>
                 )}
