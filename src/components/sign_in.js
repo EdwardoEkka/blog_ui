@@ -10,6 +10,7 @@ const Sign_in = ({show}) => {
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
   const { updateUser } = useUserContext();
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -23,7 +24,7 @@ const Sign_in = ({show}) => {
     }
     
     try {
-      const response = await axios.post("http://localhost:5000/manual-sign_in", formData);
+      const response = await axios.post(`${apiUrl}/manual-sign_in`, formData);
       const { token, user } = response.data;
 
       setToken(token);

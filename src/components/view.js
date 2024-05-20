@@ -52,6 +52,7 @@ const View = () => {
     width: window.innerWidth,
     height: window.innerHeight,
   });
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   const fetchUserDetails = async () => {
     try {
@@ -60,7 +61,7 @@ const View = () => {
         throw new Error("Token not found");
       }
 
-      const response = await axios.get("http://localhost:5000/user-details", {
+      const response = await axios.get(`${apiUrl}/user-details`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -113,7 +114,7 @@ const View = () => {
 
   const fetchBlogs = async () => {
     try {
-      const response = await axios.post("http://localhost:5000/getBlogs", {
+      const response = await axios.post(`${apiUrl}/getBlogs`, {
         id: user.userId,
       });
       console.log("Blogs fetched successfully:", response.data);
@@ -170,7 +171,7 @@ const View = () => {
   const handleSubmit = async () => {
     try {
       const response = await axios.delete(
-        `http://localhost:5000/deleteTheBlog/${id}`
+        `${apiUrl}/deleteTheBlog/${id}`
       );
       if (response.status === 200) {
         console.log(response.data);
@@ -192,7 +193,7 @@ const View = () => {
   const handleSetPublic = async () => {
     try {
       const response = await axios.post(
-        `http://localhost:5000/publicUpdate/${id}`,
+        `${apiUrl}/publicUpdate/${id}`,
         { public: pub }
       );
       if (response.status === 200) {

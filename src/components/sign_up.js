@@ -6,6 +6,7 @@ import toast, { Toaster } from "react-hot-toast";
 const Sign_up = ({show}) => {
   const [formData, setFormData] = useState({ name: "", email: "", password: "" });
   const [errorMessage, setErrorMessage] = useState("");
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -19,7 +20,7 @@ const Sign_up = ({show}) => {
     }
 
     try {
-      const response = await axios.post("http://localhost:5000/manual-sign_up", formData);
+      const response = await axios.post(`${apiUrl}/manual-sign_up`, formData);
       console.log(response.data); 
       toast.success("Sign-up Successfull");
     } catch (error) {

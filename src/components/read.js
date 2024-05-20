@@ -34,6 +34,7 @@ const Read = () => {
   const [tags, setTags] = useState([]);
   const [commentsOpen, setCommentsOpen] = useState(false);
   const { user, updateUser } = useUserContext();
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   const fetchUserDetails = async () => {
     try {
@@ -42,7 +43,7 @@ const Read = () => {
         throw new Error("Token not found");
       }
 
-      const response = await axios.get("http://localhost:5000/user-details", {
+      const response = await axios.get(`${apiUrl}/user-details`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -61,7 +62,7 @@ const Read = () => {
   async function fetchBlogData() {
     try {
       const response = await axios.get(
-        `http://localhost:5000/getTheBlog/${receivedId}`
+        `${apiUrl}/getTheBlog/${receivedId}`
       );
       if (response.status !== 200) {
         throw new Error("Failed to fetch blog data");
@@ -79,7 +80,7 @@ const Read = () => {
   async function fetchLikes() {
     try {
       const response = await axios.get(
-        `http://localhost:5000/getLikes/${receivedId}`
+        `${apiUrl}/getLikes/${receivedId}`
       );
       if (response.status !== 200) {
         throw new Error("Failed to fetch likes data");
@@ -93,7 +94,7 @@ const Read = () => {
   async function fetchComments() {
     try {
       const response = await axios.get(
-        `http://localhost:5000/getComments/${receivedId}`
+        `${apiUrl}/getComments/${receivedId}`
       );
       if (response.status !== 200) {
         throw new Error("Failed to fetch comments data");
@@ -112,7 +113,7 @@ const Read = () => {
 
   const PostLike = async (blogId) => {
     try {
-      const response = await axios.post("http://localhost:5000/postlike", {
+      const response = await axios.post(`${apiUrl}/postlike`, {
         blogId: blogId,
         likerName: user?.username,
         likerId: user?.userId,
@@ -133,7 +134,7 @@ const Read = () => {
         return;
       }
     try {
-      const response = await axios.post("http://localhost:5000/postComment", {
+      const response = await axios.post(`${apiUrl}/postComment`, {
         blogId: blogId,
         comment: comment,
         commenterName: user?.username,

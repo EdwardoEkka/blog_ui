@@ -38,6 +38,7 @@ const Public_blogs = () => {
   const isXs = useMediaQuery(theme.breakpoints.down("sm")); // xs to sm (1 blog per page)
   const isSm = useMediaQuery(theme.breakpoints.between("sm", "md")); // sm to md (2 blogs per page)
   const isMdUp = useMediaQuery(theme.breakpoints.up("md"));
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   let blogsPerPage;
   if (isXs) {
@@ -55,7 +56,7 @@ const Public_blogs = () => {
         throw new Error("Token not found");
       }
 
-      const response = await axios.get("http://localhost:5000/user-details", {
+      const response = await axios.get(`${apiUrl}/user-details`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -75,7 +76,7 @@ const Public_blogs = () => {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/getPubBlogs");
+        const response = await axios.get(`${apiUrl}/getPubBlogs`);
         console.log("Blogs fetched successfully:", response.data);
         setBlogs(response.data.slice(1));
         setLatest(response.data[0]);

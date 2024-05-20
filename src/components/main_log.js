@@ -45,6 +45,7 @@ const theme = createTheme({
 const Main_log = () => {
   const { user, updateUser } = useUserContext();
   const [log,setLog]=useState(true);
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   const show=(data)=>{
     setLog(data);
@@ -57,7 +58,7 @@ const Main_log = () => {
         throw new Error("Token not found");
       }
 
-      const response = await axios.get("http://localhost:5000/user-details", {
+      const response = await axios.get(`${apiUrl}/user-details`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

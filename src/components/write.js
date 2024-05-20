@@ -67,6 +67,7 @@ const Write = () => {
   ];
   const [isMenuOpen, setisMenuOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -85,7 +86,7 @@ const Write = () => {
         throw new Error("Token not found");
       }
 
-      const response = await axios.get("http://localhost:5000/user-details", {
+      const response = await axios.get(`${apiUrl}/user-details`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -108,7 +109,7 @@ const Write = () => {
     }
 
     try {
-      const response = await axios.post("http://localhost:5000/write", {
+      const response = await axios.post(`${apiUrl}/write`, {
         name: name,
         userId: id,
         title: title,
