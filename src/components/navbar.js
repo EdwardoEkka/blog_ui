@@ -150,7 +150,7 @@ export default function HideAppBar(props) {
                   component="div"
                   sx={{ flexGrow: 1, color: "#fff" }}
                 >
-                  Brand
+                  Wardesk
                 </Typography>
               </Grid>
               <Grid item>

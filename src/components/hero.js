@@ -25,7 +25,7 @@ const Hero=()=>{
             marginTop:{xs:"20px",md:"30px"}
           }}
         >
-         Wardesk is an open platform where readers find dynamic thinking and where expert and undiscovered voices can share their writing on any topic
+         Wardesk is an open platform where readers find dynamic thinking and where expert and undiscovered voices can share their writing on any topic.
         </Typography>
         <Stack direction="row" sx={{justifyContent:"space-between",marginTop:{xs:"20px",md:"30px"},width:"auto"}} >
         <Button variant="contained" color="primary">Start Reading<GoArrowRight/></Button>
