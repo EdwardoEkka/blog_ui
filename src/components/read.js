@@ -17,14 +17,11 @@ import {
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import axios from "axios";
-import { useLocation } from "react-router-dom";
 import { getToken } from "./tokenService";
 import { useUserContext } from "../userContext";
 import toast, { Toaster } from "react-hot-toast";
 
 const Read = () => {
-  const location = useLocation();
-  const receivedId = location.state?.blog_id;
   const [content, setContent] = useState("");
   const [title, setTitle] = useState("");
   const [likes, setLikes] = useState(0);
@@ -35,6 +32,12 @@ const Read = () => {
   const [commentsOpen, setCommentsOpen] = useState(false);
   const { user, updateUser } = useUserContext();
   const apiUrl = process.env.REACT_APP_API_URL;
+
+  const currentPageUrl = window.location.href;
+
+  const urlObject = new URL(currentPageUrl);
+  const params = new URLSearchParams(urlObject.search);
+  const blogId = params.get("blogId");
 
   const fetchUserDetails = async () => {
     try {
@@ -61,9 +64,7 @@ const Read = () => {
 
   async function fetchBlogData() {
     try {
-      const response = await axios.get(
-        `${apiUrl}/getTheBlog/${receivedId}`
-      );
+      const response = await axios.get(`${apiUrl}/getTheBlog/${blogId}`);
       if (response.status !== 200) {
         throw new Error("Failed to fetch blog data");
       }
@@ -79,9 +80,7 @@ const Read = () => {
 
   async function fetchLikes() {
     try {
-      const response = await axios.get(
-        `${apiUrl}/getLikes/${receivedId}`
-      );
+      const response = await axios.get(`${apiUrl}/getLikes/${blogId}`);
       if (response.status !== 200) {
         throw new Error("Failed to fetch likes data");
       }
@@ -93,9 +92,7 @@ const Read = () => {
 
   async function fetchComments() {
     try {
-      const response = await axios.get(
-        `${apiUrl}/getComments/${receivedId}`
-      );
+      const response = await axios.get(`${apiUrl}/getComments/${blogId}`);
       if (response.status !== 200) {
         throw new Error("Failed to fetch comments data");
       }
@@ -109,9 +106,14 @@ const Read = () => {
     fetchBlogData();
     fetchLikes();
     fetchComments();
-  }, [receivedId]);
+  }, [blogId]);
 
   const PostLike = async (blogId) => {
+    if(user.username==="")
+      {
+        toast.error("You need to Login first.");
+      return;
+      }
     try {
       const response = await axios.post(`${apiUrl}/postlike`, {
         blogId: blogId,
@@ -123,16 +125,20 @@ const Read = () => {
       toast.success("Liked");
     } catch (error) {
       console.error("Error submitting like:", error);
-      toast.error(error.response.data.message||error.message);
+      toast.error(error.response.data.message || error.message);
     }
   };
 
   const PostComment = async (blogId) => {
-    if(comment.length===0)
+    if(user.username==="")
       {
-        toast.error("Comment cannot be empty.");
-        return;
+        toast.error("You need to Login first.");
+      return;
       }
+    if (comment.length === 0) {
+      toast.error("Comment cannot be empty.");
+      return;
+    }
     try {
       const response = await axios.post(`${apiUrl}/postComment`, {
         blogId: blogId,
@@ -146,7 +152,7 @@ const Read = () => {
       toast.success("Comment posted");
     } catch (error) {
       console.error("Error submitting comment:", error);
-      toast.error(error.response.data.message||error.message);
+      toast.error(error.response.data.message || error.message);
     }
   };
 
@@ -177,13 +183,18 @@ const Read = () => {
             </Box>
           ))}
         </Stack>
-        <Typography variant="body1" gutterBottom mt={2} sx={{fontWeight:"700",fontSize:{xs:"16px",sm:"24px"}}}>
+        <Typography
+          variant="body1"
+          gutterBottom
+          mt={2}
+          sx={{ fontWeight: "700", fontSize: { xs: "16px", sm: "24px" } }}
+        >
           {title}
         </Typography>
         <Typography variant="subtitle1" color="textSecondary" gutterBottom>
           By {writer}
         </Typography>
-        <Typography variant="body2" paragraph sx={{fontSize:"16px"}}>
+        <Typography variant="body2" paragraph sx={{ fontSize: "16px" }}>
           {content}
         </Typography>
         <Typography variant="body2" color="textSecondary" gutterBottom>
@@ -194,7 +205,7 @@ const Read = () => {
             <Button
               variant="contained"
               onClick={() => {
-                PostLike(receivedId);
+                PostLike(blogId);
               }}
             >
               Like
@@ -215,7 +226,7 @@ const Read = () => {
             <Button
               variant="contained"
               onClick={() => {
-                PostComment(receivedId);
+                PostComment(blogId);
               }}
             >
               Post Comments
@@ -246,7 +257,7 @@ const Read = () => {
           </List>
         </Collapse>
       </Paper>
-      <Toaster/>
+      <Toaster />
     </Container>
   );
 };

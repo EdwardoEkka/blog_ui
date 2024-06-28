@@ -1,41 +1,78 @@
-import React from "react";
-import { Button, Container, Stack, Typography} from "@mui/material";
+import React, { useRef } from "react";
+import { Button, Container, Stack, Typography } from "@mui/material";
 import { GoArrowDown } from "react-icons/go";
 import { GoArrowRight } from "react-icons/go";
+import Public_blogs from "./public_blogs";
 
+const Hero = () => {
+  const bottomRef = useRef();
+  const MoveBottom = () => {
+    bottomRef.current?.scrollIntoView({ behaviour: "smooth" });
+  };
 
-const Hero=()=>{
-    return(
-        <Container maxWidth={false} sx={{  width: '100%' }}>
+  return (
+    <div>
+      <Container maxWidth={false} sx={{ width: "100%" }}>
         <Typography
           variant="body1"
           sx={{
-            fontSize: { xs: '20px', sm: '36px', md: '48px' },
-            fontWeight: '700',
-            marginTop:{xs:"20px",md:"50px"}
+            fontSize: { xs: "20px", sm: "36px", md: "48px" },
+            fontWeight: "700",
+            marginTop: { xs: "20px", md: "50px" },
           }}
         >
-          Dive deep into the digital ocean of blogs and emerge enriched with a wealth of diverse viewpoints, novel concepts, and valuable wisdom.
+          Dive deep into the digital ocean of blogs and emerge enriched with a
+          wealth of diverse viewpoints, novel concepts, and valuable wisdom.
         </Typography>
         <Typography
           variant="body2"
           sx={{
-            fontSize: { xs: '20px', sm: '24px', md: '24px' },
-            width:{xs:"100%",sm:"90%",md:"70%"},
-            marginTop:{xs:"20px",md:"30px"}
+            fontSize: { xs: "20px", sm: "24px", md: "24px" },
+            width: { xs: "100%", sm: "90%", md: "70%" },
+            marginTop: { xs: "20px", md: "30px" },
           }}
         >
-         Wardesk is an open platform where readers find dynamic thinking and where expert and undiscovered voices can share their writing on any topic.
+          Wardesk is an open platform where readers find dynamic thinking and
+          where expert and undiscovered voices can share their writing on any
+          topic.
         </Typography>
-        <Stack direction="row" sx={{justifyContent:"space-between",marginTop:{xs:"20px",md:"30px"},width:"auto"}} >
-        <Button variant="contained" color="primary">Start Reading<GoArrowRight/></Button>
-        <Button ><GoArrowDown />Scroll down</Button>
+        <Stack
+          direction="row"
+          sx={{
+            justifyContent: "space-between",
+            marginTop: { xs: "20px", md: "30px" },
+            width: "auto",
+          }}
+        >
+          <Button variant="contained" color="primary" onClick={() => {
+              MoveBottom();
+            }}>
+            Start Reading
+            <GoArrowRight />
+          </Button>
+          <Button
+            onClick={() => {
+              MoveBottom();
+            }}
+          >
+            <GoArrowDown />
+            Scroll down
+          </Button>
         </Stack>
-        <Stack sx={{justifyContent:"space-between",height:"2px",backgroundColor:"rgb(188, 181, 181)",marginTop:{xs:"20px",md:"30px"},width:"100%"}}>
-        </Stack>
+        <Stack
+          sx={{
+            justifyContent: "space-between",
+            height: "2px",
+            backgroundColor: "rgb(188, 181, 181)",
+            marginTop: { xs: "20px", md: "30px" },
+            width: "100%",
+          }}
+        ></Stack>
       </Container>
-      
-    )
-}
+      <Public_blogs />
+      <div ref={bottomRef}></div>
+    </div>
+  );
+};
 
 export default Hero;

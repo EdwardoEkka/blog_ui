@@ -162,7 +162,7 @@ const Public_blogs = () => {
           flexDirection: { xs: "column", md: "row" },
           width: "100%",
           marginTop: 4,
-          marginBottom:4
+          marginBottom: 4,
         }}
         maxWidth={false}
       >
@@ -184,7 +184,9 @@ const Public_blogs = () => {
                 overflow: "hidden",
               }}
               onClick={() => {
-                navigate("/read", { state: { blog_id: latest._id } });
+                navigate(`/read?blogId=${latest._id}`, {
+                  state: { blog_id: latest._id },
+                });
               }}
             >
               <CardMedia
@@ -342,32 +344,35 @@ const Public_blogs = () => {
               </Card>
             ))}
           </Stack>
-
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              width: "100%",
-              mt: 2,
-            }}
-          >
-            <Button
-              variant="contained"
-              onClick={handlePreviousPage}
-              disabled={currentPage === 0}
+          {blogs.length === 0 ? (
+            ""
+          ) : (
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                width: "100%",
+                mt: 2,
+              }}
             >
-              Previous
-            </Button>
-            <Button
-              variant="contained"
-              onClick={handleNextPage}
-              disabled={
-                currentPage >= Math.ceil(blogs.length / blogsPerPage) - 1
-              }
-            >
-              Next
-            </Button>
-          </Box>
+              <Button
+                variant="contained"
+                onClick={handlePreviousPage}
+                disabled={currentPage === 0}
+              >
+                Previous
+              </Button>
+              <Button
+                variant="contained"
+                onClick={handleNextPage}
+                disabled={
+                  currentPage >= Math.ceil(blogs.length / blogsPerPage) - 1
+                }
+              >
+                Next
+              </Button>
+            </Box>
+          )}
         </Stack>
       </Container>
     </ThemeProvider>
