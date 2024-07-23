@@ -7,7 +7,7 @@ import {
   Box,
   Button,
   useMediaQuery,
-  Chip,
+  Skeleton,
 } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
@@ -32,6 +32,7 @@ const theme = createTheme({
 const Public_blogs = () => {
   const [blogs, setBlogs] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const { user, updateUser } = useUserContext();
   const [latest, setLatest] = useState(null);
@@ -80,6 +81,7 @@ const Public_blogs = () => {
         console.log("Blogs fetched successfully:", response.data);
         setBlogs(response.data.slice(1));
         setLatest(response.data[0]);
+        setIsLoading(false);
       } catch (error) {
         console.error("Error getting blogs:", error);
       }
@@ -173,127 +175,48 @@ const Public_blogs = () => {
             height: { md: "600px", xs: "300px" },
           }}
         >
-          {latest && (
-            <Card
-              sx={{
-                width: "100%",
-                mb: 2,
-                cursor: "pointer",
-                height: { md: "100%", xs: "100%" },
-                position: "relative",
-                overflow: "hidden",
-              }}
-              onClick={() => {
-                navigate(`/read?blogId=${latest._id}`, {
-                  state: { blog_id: latest._id },
-                });
-              }}
-            >
-              <CardMedia
-                component="img"
-                image={latest.imageUrl || "/img.png"}
-                alt={latest.title}
-                sx={{ height: { md: "100%", xs: "100%" }, objectFit: "cover" }}
-              />
-              <Box
-                sx={{
-                  position: "absolute",
-                  bottom: 0,
-                  left: 0,
-                  width: "100%",
-                  backgroundColor: "rgba(0, 0, 0, 0.6)",
-                  color: "white",
-                  p: 2,
-                  boxSizing: "border-box",
-                }}
-              >
-                <Stack direction="row" gap={2}>
-                  <Typography
-                    variant="body2"
-                    color="textSecondary"
-                    sx={{
-                      display: "flex",
-                      justifyContent: "flex-end",
-                      fontSize: "16px",
-                      fontWeight: "bold",
-                      color: "white",
-                    }}
-                  >
-                    {latest.name}
-                  </Typography>
-                  <Typography variant="body2" color="white">
-                    {formatDate(latest.date)}
-                  </Typography>
-                </Stack>
-                <Typography
-                  variant="h6"
-                  sx={{
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    width: "100%",
-                  }}
-                  gutterBottom
-                >
-                  {latest.title}
-                </Typography>
-                <Stack gap={1} direction="row" sx={{ flexWrap: "wrap" }}>
-                  {latest.tags.slice(0, 3).map((tag, index) => (
-                    <Box
-                      key={index}
-                      sx={{
-                        bgcolor: "#787878",
-                        color: "white",
-                        p: 0.5,
-                        borderRadius: 1,
-                        fontSize: "12px",
-                      }}
-                    >
-                      {tag}
-                    </Box>
-                  ))}
-                </Stack>
-              </Box>
-            </Card>
-          )}
-        </Stack>
-        <Stack sx={{ width: { md: "50%", xs: "100%" } }}>
-          <Stack
-            flexWrap={{ md: "wrap" }}
-            gap={2}
-            justifyContent="center"
-            alignItems="flex-start"
-            sx={{ height: { md: "auto", xs: "auto" }, flexDirection: "row" }}
-          >
-            {displayedBlogs.map((blog, index) => (
+          {isLoading ? (
+            <Skeleton
+              variant="rectangular"
+              width="100%"
+              height="100%"
+              sx={{ mb: 2 }}
+            />
+          ) : (
+            latest && (
               <Card
-                key={index}
                 sx={{
                   width: "100%",
-                  maxWidth: "100%",
                   mb: 2,
                   cursor: "pointer",
-                  display: "flex",
-                  flexDirection: { xs: "column", md: "row" },
+                  height: { md: "100%", xs: "100%" },
+                  position: "relative",
+                  overflow: "hidden",
                 }}
                 onClick={() => {
-                  navigate(`/read?blogId=${blog._id}`, {
-                    state: { blog_id: blog._id },
+                  navigate(`/read?blogId=${latest._id}`, {
+                    state: { blog_id: latest._id },
                   });
                 }}
               >
-                <Stack sx={{ width: { xs: "100%", md: "40%" } }}>
-                  <CardMedia
-                    component="img"
-                    image={blog.imageUrl || "/img.png"}
-                    alt={blog.title}
-                    sx={{
-                      height: 150,
-                      objectFit: "cover",
-                    }}
-                  />
-                </Stack>
-                <Box sx={{ p: 1.6, width: { xs: "100%", md: "60%" } }}>
+                <CardMedia
+                  component="img"
+                  image={latest.imageUrl || "/img.png"}
+                  alt={latest.title}
+                  sx={{ height: { md: "100%", xs: "100%" }, objectFit: "cover" }}
+                />
+                <Box
+                  sx={{
+                    position: "absolute",
+                    bottom: 0,
+                    left: 0,
+                    width: "100%",
+                    backgroundColor: "rgba(0, 0, 0, 0.6)",
+                    color: "white",
+                    p: 2,
+                    boxSizing: "border-box",
+                  }}
+                >
                   <Stack direction="row" gap={2}>
                     <Typography
                       variant="body2"
@@ -303,36 +226,34 @@ const Public_blogs = () => {
                         justifyContent: "flex-end",
                         fontSize: "16px",
                         fontWeight: "bold",
+                        color: "white",
                       }}
                     >
-                      {blog.name}
+                      {latest.name}
                     </Typography>
-                    <Typography variant="body2" color="textSecondary">
-                      {formatDate(blog.date)}
+                    <Typography variant="body2" color="white">
+                      {formatDate(latest.date)}
                     </Typography>
                   </Stack>
                   <Typography
                     variant="h6"
                     sx={{
-                      display: "-webkit-box",
-                      WebkitBoxOrient: "vertical",
-                      WebkitLineClamp: 2,
+                      whiteSpace: "nowrap",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
                       width: "100%",
                     }}
                     gutterBottom
                   >
-                    {blog.title}
+                    {latest.title}
                   </Typography>
-
                   <Stack gap={1} direction="row" sx={{ flexWrap: "wrap" }}>
-                    {blog.tags.slice(0, 3).map((tag, index) => (
+                    {latest.tags.slice(0, 3).map((tag, index) => (
                       <Box
                         key={index}
                         sx={{
-                          bgcolor: "#E8E8E8",
-                          color: "black",
+                          bgcolor: "#787878",
+                          color: "white",
                           p: 0.5,
                           borderRadius: 1,
                           fontSize: "12px",
@@ -344,7 +265,107 @@ const Public_blogs = () => {
                   </Stack>
                 </Box>
               </Card>
-            ))}
+            )
+          )}
+        </Stack>
+        <Stack sx={{ width: { md: "50%", xs: "100%" } }}>
+          <Stack
+            flexWrap={{ md: "wrap" }}
+            gap={2}
+            justifyContent="center"
+            alignItems="flex-start"
+            sx={{ height: { md: "auto", xs: "auto" }, flexDirection: "row" }}
+          >
+            {isLoading
+              ? Array.from(new Array(blogsPerPage)).map((_, index) => (
+                  <Skeleton
+                    key={index}
+                    variant="rectangular"
+                    width="100%"
+                    height={150}
+                    sx={{ mb: 2 }}
+                  />
+                ))
+              : displayedBlogs.map((blog, index) => (
+                  <Card
+                    key={index}
+                    sx={{
+                      width: "100%",
+                      maxWidth: "100%",
+                      mb: 2,
+                      cursor: "pointer",
+                      display: "flex",
+                      flexDirection: { xs: "column", md: "row" },
+                    }}
+                    onClick={() => {
+                      navigate(`/read?blogId=${blog._id}`, {
+                        state: { blog_id: blog._id },
+                      });
+                    }}
+                  >
+                    <Stack sx={{ width: { xs: "100%", md: "40%" } }}>
+                      <CardMedia
+                        component="img"
+                        image={blog.imageUrl || "/img.png"}
+                        alt={blog.title}
+                        sx={{
+                          height: 150,
+                          objectFit: "cover",
+                        }}
+                      />
+                    </Stack>
+                    <Box sx={{ p: 1.6, width: { xs: "100%", md: "60%" } }}>
+                      <Stack direction="row" gap={2}>
+                        <Typography
+                          variant="body2"
+                          color="textSecondary"
+                          sx={{
+                            display: "flex",
+                            justifyContent: "flex-end",
+                            fontSize: "16px",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          {blog.name}
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary">
+                          {formatDate(blog.date)}
+                        </Typography>
+                      </Stack>
+                      <Typography
+                        variant="h6"
+                        sx={{
+                          display: "-webkit-box",
+                          WebkitBoxOrient: "vertical",
+                          WebkitLineClamp: 2,
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          width: "100%",
+                        }}
+                        gutterBottom
+                      >
+                        {blog.title}
+                      </Typography>
+
+                      <Stack gap={1} direction="row" sx={{ flexWrap: "wrap" }}>
+                        {blog.tags.slice(0, 3).map((tag, index) => (
+                          <Box
+                            key={index}
+                            sx={{
+                              bgcolor: "#E8E8E8",
+                              color: "black",
+                              p: 0.5,
+                              borderRadius: 1,
+                              fontSize: "12px",
+                            }}
+                          >
+                            {tag}
+                          </Box>
+                        ))}
+                      </Stack>
+                    </Box>
+                  </Card>
+                ))}
           </Stack>
           {blogs.length === 0 ? (
             ""
