@@ -277,7 +277,9 @@ const Public_blogs = () => {
                   flexDirection: { xs: "column", md: "row" },
                 }}
                 onClick={() => {
-                  navigate("/read", { state: { blog_id: blog._id } });
+                  navigate(`/read?blogId=${blog._id}`, {
+                    state: { blog_id: blog._id },
+                  });
                 }}
               >
                 <Stack sx={{ width: { xs: "100%", md: "40%" } }}>

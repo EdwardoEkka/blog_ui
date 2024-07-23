@@ -56,15 +56,24 @@ const Write = () => {
   const [fontColor, setFontColor] = useState("#000000");
   const [fntFamily, setFntFamily] = useState("Arial");
   const availableTags = [
-    "React",
-    "JavaScript",
-    "Material-UI",
-    "CSS",
-    "HTML",
-    "Node.js",
-    "Express",
-    "MongoDB",
+    "Web Development",
+    "Programming",
+    "Tech News",
+    "Tutorials",
+    "Opinion",
+    "Reviews",
+    "Productivity",
+    "Lifestyle",
+    "Career",
+    "Education",
+    "Design",
+    "SEO",
+    "Marketing",
+    "Data Science",
+    "AI",
+    "Machine Learning",
   ];
+  
   const [isMenuOpen, setisMenuOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const apiUrl = process.env.REACT_APP_API_URL;
