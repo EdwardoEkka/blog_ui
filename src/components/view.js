@@ -170,9 +170,7 @@ const View = () => {
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.delete(
-        `${apiUrl}/deleteTheBlog/${id}`
-      );
+      const response = await axios.delete(`${apiUrl}/deleteTheBlog/${id}`);
       if (response.status === 200) {
         console.log(response.data);
         setTitle("");
@@ -192,20 +190,16 @@ const View = () => {
 
   const handleSetPublic = async () => {
     try {
-      const response = await axios.post(
-        `${apiUrl}/publicUpdate/${id}`,
-        { public: pub }
-      );
+      const response = await axios.post(`${apiUrl}/publicUpdate/${id}`, {
+        public: pub,
+      });
       if (response.status === 200) {
         console.log("Public updated successfully");
         setPub(response.data.public);
         fetchBlogs();
-        if(response.data.public===true)
-          {
-            toast.success("Blog is public now.");
-          }
-        else
-        {
+        if (response.data.public === true) {
+          toast.success("Blog is public now.");
+        } else {
           toast.success("Blog is private now.");
         }
       } else {
@@ -264,7 +258,11 @@ const View = () => {
               <Stack>
                 <Typography
                   variant="body2"
-                  sx={{ fontSize: "24px", fontWeight: "700",marginTop:{xs:"10px",sm:"20px"}}}
+                  sx={{
+                    fontSize: "24px",
+                    fontWeight: "700",
+                    marginTop: { xs: "10px", sm: "20px" },
+                  }}
                 >
                   Hello {user.username}
                 </Typography>
@@ -281,7 +279,7 @@ const View = () => {
                     sx={{
                       display: "flex",
                       flexDirection: "row",
-                      marginTop:{xs:"10px",sm:"20px"}
+                      marginTop: { xs: "10px", sm: "20px" },
                     }}
                   >
                     <Typography
@@ -318,13 +316,26 @@ const View = () => {
                     </Typography>
                   </Stack>
                   {show ? (
-                    <Stack sx={{ p: "10px", width: "95%", marginTop:{sm:"20px",xs:"10px"}}}>
+                    <Stack
+                      sx={{
+                        p: "10px",
+                        width: "95%",
+                        marginTop: { sm: "20px", xs: "10px" },
+                      }}
+                    >
                       <DatePicker
                         selected={selectedDate}
                         onChange={(date) => setSelectedDate(date)}
                         dateFormat="dd-MM-yyyy"
                       />
-                      <Typography variant="body2" sx={{marginTop:{xs:"10px",sm:"20px"},fontSize:"16px",fontWeight:"400"}}>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          marginTop: { xs: "10px", sm: "20px" },
+                          fontSize: "16px",
+                          fontWeight: "400",
+                        }}
+                      >
                         Blog for{" "}
                         {selectedDate
                           ? selectedDate.toLocaleDateString("en-GB")
@@ -341,10 +352,9 @@ const View = () => {
                               marginTop: "10px",
                               borderRadius: "10px",
                               flexGrow: 1,
-                              '&:hover': {
-                                backgroundColor: 'grey',
+                              "&:hover": {
+                                backgroundColor: "grey",
                               },
-                              
                             }}
                             onClick={() => {
                               setId(blog._id);
@@ -353,6 +363,7 @@ const View = () => {
                               setTags(blog.tags);
                               setIsopen(!isopen);
                               setPub(blog.public);
+                              console.log(blog.title);
                             }}
                           >
                             <Typography
@@ -377,12 +388,27 @@ const View = () => {
                         ))
                       ) : (
                         <Stack>
-                          <Typography variant="body2" sx={{fontSize:"16px",fontWeight:"700",marginTop:"10px"}}>No Blogs Found for the Selected Date</Typography>
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              fontSize: "16px",
+                              fontWeight: "700",
+                              marginTop: "10px",
+                            }}
+                          >
+                            No Blogs Found for the Selected Date
+                          </Typography>
                         </Stack>
                       )}
                     </Stack>
                   ) : (
-                    <Stack sx={{ p: "10px", width: "95%",marginTop:{xs:"10px",sm:"20px"}}}>
+                    <Stack
+                      sx={{
+                        p: "10px",
+                        width: "95%",
+                        marginTop: { xs: "10px", sm: "20px" },
+                      }}
+                    >
                       {paginatedData.map((item, index) => (
                         <Stack
                           key={index}
@@ -392,9 +418,9 @@ const View = () => {
                             cursor: "pointer",
                             marginTop: "10px",
                             borderRadius: "10px",
-                            '&:hover': {
-                              backgroundColor: 'grey',
-                            }
+                            "&:hover": {
+                              backgroundColor: "grey",
+                            },
                           }}
                           onClick={() => {
                             setId(item._id);
@@ -403,6 +429,7 @@ const View = () => {
                             setTags(item.tags);
                             setPub(item.public);
                             setIsopen(!isopen);
+                            console.log(item.body);
                           }}
                         >
                           <Typography
@@ -458,7 +485,7 @@ const View = () => {
                 </Stack>
               ) : (
                 <Button
-                  sx={{ cursor: "pointer",marginTop:"20px"}}
+                  sx={{ cursor: "pointer", marginTop: "20px" }}
                   variant="contained"
                   onClick={() => {
                     navigate("/write");
@@ -505,7 +532,7 @@ const View = () => {
                     paddingRight: { xs: "2px", sm: "20px" },
                   }}
                 >
-                  <Container>
+                  <Container disableGutters sx={{height:"100vh"}}>
                     <Paper
                       elevation={3}
                       sx={{
@@ -578,24 +605,24 @@ const View = () => {
                         </Stack>
                       )}
                       <Typography
-                        variant="body1"
-                        gutterBottom
-                        mt={2}
+                        variant="h5"
                         sx={{
-                          fontWeight: "700",
-                          fontSize: { xs: "16px", sm: "24px" },
+                          fontSize: {
+                            xs: "1.5rem", // font size for extra small screens
+                            sm: "1.75rem", // font size for small screens
+                            md: "2rem", // font size for medium screens
+                            lg: "2.5rem", // font size for large screens
+                            xl: "3rem", // font size for extra large screens
+                          },
+                          marginTop:"20px"
                         }}
                       >
                         {title}
                       </Typography>
-                      <Typography
-                        variant="body1"
-                        paragraph
-                        mt={2}
-                        sx={{ fontSize: { xs: "16px", sm: "20px" } }}
-                      >
-                        {body}
-                      </Typography>
+                      <Box
+                        dangerouslySetInnerHTML={{ __html: body }}
+                        style={{ margin: 0 }}
+                      />
                     </Paper>
                   </Container>
                 </Stack>
@@ -607,7 +634,7 @@ const View = () => {
         ) : (
           <PleaseLogin word={"read"} />
         )}
-        <Toaster/>
+        <Toaster />
       </div>
     </ThemeProvider>
   );

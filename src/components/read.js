@@ -109,11 +109,10 @@ const Read = () => {
   }, [blogId]);
 
   const PostLike = async (blogId) => {
-    if(user.username==="")
-      {
-        toast.error("You need to Login first.");
+    if (user.username === "") {
+      toast.error("You need to Login first.");
       return;
-      }
+    }
     try {
       const response = await axios.post(`${apiUrl}/postlike`, {
         blogId: blogId,
@@ -130,11 +129,10 @@ const Read = () => {
   };
 
   const PostComment = async (blogId) => {
-    if(user.username==="")
-      {
-        toast.error("You need to Login first.");
+    if (user.username === "") {
+      toast.error("You need to Login first.");
       return;
-      }
+    }
     if (comment.length === 0) {
       toast.error("Comment cannot be empty.");
       return;
@@ -165,8 +163,8 @@ const Read = () => {
   };
 
   return (
-    <Container maxWidth="md">
-      <Paper elevation={3} sx={{ padding: { xs: 2, sm: 4 }, marginTop: 4 }}>
+    <Container maxWidth="md" sx={{m:{xs:0,md:"auto"}}} disableGutters>
+      <Paper elevation={3} sx={{ padding: { xs: 2, sm: 4 }}}>
         <Stack gap={1} direction="row" sx={{ flexWrap: "wrap" }}>
           {tags.slice(0, 3).map((tag, index) => (
             <Box
@@ -183,20 +181,26 @@ const Read = () => {
             </Box>
           ))}
         </Stack>
-        <Typography
-          variant="body1"
-          gutterBottom
-          mt={2}
-          sx={{ fontWeight: "700", fontSize: { xs: "16px", sm: "24px" } }}
-        >
-          {title}
-        </Typography>
-        <Typography variant="subtitle1" color="textSecondary" gutterBottom>
+        <Typography variant="subtitle1" color="textSecondary" sx={{marginTop:"20px"}}>
           By {writer}
         </Typography>
-        <Typography variant="body2" paragraph sx={{ fontSize: "16px" }}>
-          {content}
-        </Typography>
+        <Typography
+      variant="h5"
+      sx={{
+        fontSize: {
+          xs: '1.5rem', 
+          sm: '1.75rem', 
+          md: '2rem', 
+          lg: '2.5rem', 
+          xl: '3rem',  
+        },
+      }}
+    >
+      {title}
+    </Typography>
+        <Box
+          dangerouslySetInnerHTML={{ __html: content }}
+        />
         <Typography variant="body2" color="textSecondary" gutterBottom>
           Likes: {likes}
         </Typography>

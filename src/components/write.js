@@ -11,7 +11,6 @@ import React, { useState, useEffect } from "react";
 import { SlArrowDown } from "react-icons/sl";
 import { SlArrowUp } from "react-icons/sl";
 import Slide from "@mui/material/Slide";
-import Edit from "./edit";
 // import Chip from "@mui/material/Chip";
 import { useUserContext } from "../userContext";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
@@ -20,6 +19,8 @@ import { getToken } from "./tokenService";
 import TagsInput from "./tags";
 import PleaseLogin from "./l_t_c";
 import toast, { Toaster } from "react-hot-toast";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 const theme = createTheme({
   breakpoints: {
@@ -73,7 +74,7 @@ const Write = () => {
     "AI",
     "Machine Learning",
   ];
-  
+
   const [isMenuOpen, setisMenuOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const apiUrl = process.env.REACT_APP_API_URL;
@@ -287,10 +288,20 @@ const Write = () => {
                         }}
                       />
                     )}
-                     <Stack sx={{ padding: "10px",justifyContent:"center"}} direction="column">
-                  <Typography variant="body2" sx={{fontSize:"16px"}}>{quote}</Typography>
-                  <Typography variant="body2" sx={{fontSize:"16px",fontWeight:"700"}}>- {author}</Typography>
-                </Stack>
+                    <Stack
+                      sx={{ padding: "10px", justifyContent: "center" }}
+                      direction="column"
+                    >
+                      <Typography variant="body2" sx={{ fontSize: "16px" }}>
+                        {quote}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        sx={{ fontSize: "16px", fontWeight: "700" }}
+                      >
+                        - {author}
+                      </Typography>
+                    </Stack>
                   </Stack>
                 </Slide>
               ) : null
@@ -339,16 +350,26 @@ const Write = () => {
                     }}
                   />
                 )}
-                <Stack sx={{ padding: "10px",justifyContent:"center"}} direction="column">
-                  <Typography variant="body2" sx={{fontSize:"16px"}}>{quote}</Typography>
-                  <Typography variant="body2" sx={{fontSize:"16px",fontWeight:"700"}}>- {author}</Typography>
+                <Stack
+                  sx={{ padding: "10px", justifyContent: "center" }}
+                  direction="column"
+                >
+                  <Typography variant="body2" sx={{ fontSize: "16px" }}>
+                    {quote}
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    sx={{ fontSize: "16px", fontWeight: "700" }}
+                  >
+                    - {author}
+                  </Typography>
                 </Stack>
               </Stack>
             )}
 
             <Stack
               sx={{
-                height: "auto",
+                minHeight: "100vh",
                 width: "100vw",
                 backgroundColor: "#E7DECC",
                 alignItems: "center",
@@ -367,39 +388,12 @@ const Write = () => {
                 direction="column"
                 alignItems="center"
                 spacing={2}
-                sx={{ marginTop: { xs: "10px", sm: "20px" } }}
+                sx={{
+                  marginTop: { xs: "10px", sm: "20px" },
+                  width: "100%",
+                  paddingX: "16px",
+                }}
               >
-                <Typography
-                  variant="body2"
-                  sx={{
-                    textAlign: "left",
-                    fontWeight: "700",
-                    fontSize: "24px",
-                  }}
-                >
-                  Write your blog here
-                </Typography>
-                <Button
-                  variant="contained"
-                  onClick={handleMenuClick}
-                  sx={{ marginBottom: "20px" }}
-                >
-                  {isMenuOpen ? "Tools" : "Tools"}
-                </Button>
-
-                <Menu
-                  anchorEl={anchorEl}
-                  open={isMenuOpen}
-                  onClose={handleMenuClose}
-                >
-                  <MenuItem>
-                    <Edit
-                      fFmaily={handleFontFamilyChange}
-                      fSize={handleFontSizeChange}
-                      fColor={handleFontColorChange}
-                    />
-                  </MenuItem>
-                </Menu>
                 <Container>
                   <TagsInput
                     tags={tags}
@@ -407,49 +401,33 @@ const Write = () => {
                     availableTags={availableTags}
                   />
                 </Container>
+
                 <TextField
-                  id="blog-title"
-                  multiline
+                  label="Title"
                   variant="outlined"
+                  fullWidth
+                  name="name"
                   value={title}
-                  rows={2}
                   onChange={handletitleChange}
-                  sx={{
-                    width: { md: "60vw", xs: "80vw" },
-                    backgroundColor: "white",
-                  }}
-                  InputProps={{
-                    style: {
-                      color: fontColor,
-                      fontSize: `${fontSize}px`,
-                      fontFamily: fntFamily,
-                    },
-                  }}
                 />
-                <TextField
-                  id="blog-content"
-                  multiline
-                  variant="outlined"
-                  value={content}
-                  onChange={handleContentChange}
-                  sx={{
-                    width: { md: "60vw", xs: "80vw" },
-                    backgroundColor: "white",
-                    minHeight: "70vh",
-                  }}
-                  InputProps={{
-                    style: {
-                      color: fontColor,
+                <Stack sx={{ marginBottom: "20px", width: "100%" }}>
+                  <ReactQuill
+                    value={content}
+                    onChange={setContent}
+                    placeholder="Enter content here"
+                    style={{
+                      marginBottom: "20px",
+                      width: "100%",
                       fontSize: `${fontSize}px`,
+                      color: fontColor,
                       fontFamily: fntFamily,
-                    },
-                  }}
-                />
+                    }}
+                  />
+                </Stack>
               </Stack>
               <Button
                 variant="contained"
                 color="primary"
-                sx={{ m: "20px" }}
                 onClick={() => {
                   handleSubmit();
                 }}
@@ -461,7 +439,7 @@ const Write = () => {
         ) : (
           <PleaseLogin word={"write"} />
         )}
-        <Toaster/>
+        <Toaster />
       </Stack>
     </ThemeProvider>
   );

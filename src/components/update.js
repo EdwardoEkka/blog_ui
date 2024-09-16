@@ -19,6 +19,8 @@ import { useUserContext } from "../userContext";
 import TagsInput from "./tags";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 const theme = createTheme({
   breakpoints: {
@@ -70,7 +72,7 @@ const Update = (props) => {
     "AI",
     "Machine Learning",
   ];
-  
+
   const [isMenuOpen, setisMenuOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const apiUrl = process.env.REACT_APP_API_URL;
@@ -114,9 +116,7 @@ const Update = (props) => {
   useEffect(() => {
     async function fetchBlogData() {
       try {
-        const response = await axios.get(
-          `${apiUrl}/getTheBlog/${recievedId}`
-        );
+        const response = await axios.get(`${apiUrl}/getTheBlog/${recievedId}`);
         if (response.status !== 200) {
           throw new Error("Failed to fetch blog data");
         }
@@ -243,7 +243,7 @@ const Update = (props) => {
       toast.error("Please fill in all fields before submitting.");
       return;
     }
-  
+
     try {
       const response = await axios.post(
         `${apiUrl}/updateTheBlog/${recievedId}`,
@@ -264,7 +264,6 @@ const Update = (props) => {
       console.error(error);
     }
   };
-  
 
   return (
     <ThemeProvider theme={theme}>
@@ -284,8 +283,26 @@ const Update = (props) => {
                       alignItems: "center",
                     }}
                   >
-                     <Typography variant="body2" sx={{ marginTop:"20px",fontSize:"24px",fontWeight:"700"}}>Good {timeOfDay}</Typography>
-                <Typography variant="body2" sx={{ marginTop:"20px",fontSize:"20px",fontWeight:"400"}}>{time.toLocaleTimeString()}</Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        marginTop: "20px",
+                        fontSize: "24px",
+                        fontWeight: "700",
+                      }}
+                    >
+                      Good {timeOfDay}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        marginTop: "20px",
+                        fontSize: "20px",
+                        fontWeight: "400",
+                      }}
+                    >
+                      {time.toLocaleTimeString()}
+                    </Typography>
                     {picture && (
                       <img
                         src={picture}
@@ -297,10 +314,20 @@ const Update = (props) => {
                         }}
                       />
                     )}
-                    <Stack sx={{ padding: "10px",justifyContent:"center"}} direction="column">
-                  <Typography variant="body2" sx={{fontSize:"16px"}}>{quote}</Typography>
-                  <Typography variant="body2" sx={{fontSize:"16px",fontWeight:"700"}}>- {author}</Typography>
-                </Stack>
+                    <Stack
+                      sx={{ padding: "10px", justifyContent: "center" }}
+                      direction="column"
+                    >
+                      <Typography variant="body2" sx={{ fontSize: "16px" }}>
+                        {quote}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        sx={{ fontSize: "16px", fontWeight: "700" }}
+                      >
+                        - {author}
+                      </Typography>
+                    </Stack>
                   </Stack>
                 </Slide>
               ) : null
@@ -318,8 +345,26 @@ const Update = (props) => {
                   zIndex: 1,
                 }}
               >
-                 <Typography variant="body2" sx={{ marginTop:"20px",fontSize:"24px",fontWeight:"700"}}>Good {timeOfDay}</Typography>
-                <Typography variant="body2" sx={{ marginTop:"20px",fontSize:"20px",fontWeight:"400"}}>{time.toLocaleTimeString()}</Typography>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    marginTop: "20px",
+                    fontSize: "24px",
+                    fontWeight: "700",
+                  }}
+                >
+                  Good {timeOfDay}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    marginTop: "20px",
+                    fontSize: "20px",
+                    fontWeight: "400",
+                  }}
+                >
+                  {time.toLocaleTimeString()}
+                </Typography>
                 {picture && (
                   <img
                     src={picture}
@@ -331,16 +376,26 @@ const Update = (props) => {
                     }}
                   />
                 )}
-                 <Stack sx={{ padding: "10px",justifyContent:"center"}} direction="column">
-                  <Typography variant="body2" sx={{fontSize:"16px"}}>{quote}</Typography>
-                  <Typography variant="body2" sx={{fontSize:"16px",fontWeight:"700"}}>- {author}</Typography>
+                <Stack
+                  sx={{ padding: "10px", justifyContent: "center" }}
+                  direction="column"
+                >
+                  <Typography variant="body2" sx={{ fontSize: "16px" }}>
+                    {quote}
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    sx={{ fontSize: "16px", fontWeight: "700" }}
+                  >
+                    - {author}
+                  </Typography>
                 </Stack>
               </Stack>
             )}
 
             <Stack
               sx={{
-                height: "auto",
+                height: "100vh",
                 width: "100vw",
                 backgroundColor: "#E7DECC",
                 alignItems: "center",
@@ -348,53 +403,23 @@ const Update = (props) => {
               }}
             >
               <Stack
-                sx={{ display: { xs: "block", md: "none" } }}
+                sx={{ display: { xs: "block", md: "none" }}}
                 onClick={() => {
                   setIsopen(!isopen);
                 }}
               >
                 {isopen ? <SlArrowUp /> : <SlArrowDown />}
               </Stack>
-              <Stack direction="column" alignItems="center" spacing={2} sx={{ marginTop: { xs: "10px", sm: "20px" } }}>
-              <Typography
-                  variant="body2"
-                  sx={{
-                    textAlign: "left",
-                    fontWeight: "700",
-                    fontSize: "24px",
-                  }}
-                >
-                  Update your blog here
-                </Typography>
-                <Button
-                  variant="contained"
-                  onClick={handleMenuClick}
-                  sx={{ marginBottom: 10 }}
-                >
-                  {isMenuOpen ? "Close Menu" : "Open Tools"}
-                </Button>
-
-                <Menu
-                  anchorEl={anchorEl}
-                  open={isMenuOpen}
-                  onClose={handleMenuClose}
-                >
-                  <MenuItem>
-                    <Edit
-                      fFmaily={handleFontFamilyChange}
-                      fSize={handleFontSizeChange}
-                      fColor={handleFontColorChange}
-                    />
-                  </MenuItem>
-                </Menu>
-
-                {isMenuOpen && (
-                  <Edit
-                    fFmaily={handleFontFamilyChange}
-                    fSize={handleFontSizeChange}
-                    fColor={handleFontColorChange}
-                  />
-                )}
+              <Stack
+                direction="column"
+                alignItems="center"
+                spacing={2}
+                sx={{
+                  marginTop: { xs: "10px", sm: "20px" },
+                  width: "100%",
+                  paddingX: "16px",
+                }}
+              >
                 <Container>
                   <TagsInput
                     tags={tags}
@@ -403,48 +428,32 @@ const Update = (props) => {
                   />
                 </Container>
                 <TextField
-                  id="blog-title"
-                  multiline
+                  label="Title"
                   variant="outlined"
+                  fullWidth
+                  name="name"
                   value={title}
-                  rows={2}
                   onChange={handletitleChange}
-                  sx={{
-                    width: { md: "60vw", xs: "80vw" },
-                    backgroundColor: "white",
-                  }}
-                  InputProps={{
-                    style: {
-                      color: fontColor,
-                      fontSize: `${fontSize}px`,
-                      fontFamily: fntFamily,
-                    },
-                  }}
                 />
-                <TextField
-                  id="blog-content"
-                  multiline
-                  variant="outlined"
+                <Stack sx={{marginBottom:"20px"}}>
+                <ReactQuill
                   value={content}
-                  onChange={handleContentChange}
-                  sx={{
-                    width: { md: "60vw", xs: "80vw" },
-                    backgroundColor: "white",
-                    minHeight: "70vh",
-                  }}
-                  InputProps={{
-                    style: {
-                      color: fontColor,
-                      fontSize: `${fontSize}px`,
-                      fontFamily: fntFamily,
-                    },
+                  onChange={setContent}
+                  placeholder="Enter content here"
+                  style={{
+                    marginBottom: "20px",
+                    width: "100%",
+                    fontSize: `${fontSize}px`,
+                    color: fontColor,
+                    fontFamily: fntFamily,
                   }}
                 />
+                </Stack>
               </Stack>
               <Button
                 variant="contained"
                 color="primary"
-                sx={{ m: "20px" }}
+                sx={{}}
                 onClick={() => {
                   handleSubmit();
                 }}
@@ -454,7 +463,7 @@ const Update = (props) => {
             </Stack>
           </Stack>
         )}
-        <Toaster/>
+        <Toaster />
       </Stack>
     </ThemeProvider>
   );
