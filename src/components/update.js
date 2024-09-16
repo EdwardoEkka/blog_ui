@@ -395,7 +395,7 @@ const Update = (props) => {
 
             <Stack
               sx={{
-                height: "100vh",
+                minHeight: "100vh",
                 width: "100vw",
                 backgroundColor: "#E7DECC",
                 alignItems: "center",
